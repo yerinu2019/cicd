@@ -1,11 +1,12 @@
-FROM golang:1.17-alpine
+FROM golang:1.17-buster
 MAINTAINER yerinu2012
 # vi: ft=dockerfile
 
-RUN apk update && apk add curl \
+RUN apt-get update && apt-get install curl \
                           git \
-                          protobuf \
+                          protobuf-compiler \
                           bash \
                           make \
                           openssh-client && \
-     rm -rf /var/cache/apk/*
+     curl https://wasmtime.dev/install.sh -sSf | bash && \
+     rm -rf /var/cache/apt/*
