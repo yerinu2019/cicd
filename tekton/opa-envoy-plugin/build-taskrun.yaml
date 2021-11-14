@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dockerhub-sa
+secrets:
+  - name: dockerhub-credential
+---
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: opa-envoy-plugin-build-task-run
+spec:
+  serviceAccountName: dockerhub-sa
+  taskRef:
+    name: opa-envoy-plugin-build
+  workspaces:
+    - name: kaniko
+      persistentVolumeClaim:
+        claimName: dockerfile-claim

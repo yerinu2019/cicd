@@ -1,0 +1,52 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: opa-envoy-plugin-build
+spec:
+  volumes:
+    - name: dockerhub-credential-volume
+      secret:
+        defaultMode: 420
+        secretName: dockerhub-credential
+  workspaces:
+    - name: kaniko
+      description: folder for built docker file and binary file
+  steps:
+    - name: build-source
+      image: yerinu2019/go-make-1.17
+      script: |
+        #!/usr/bin/env bash
+        set -xe
+        cd $(workspaces.kaniko.path)
+        pwd
+        #echo "Docker file" > .Dockerfile_amd64
+        #echo "Binary file" > opa_envoy_linux_amd64
+        #cp .Dockerfile_amd64 $(workspaces.kaniko.path)
+        #cp binary $(workspaces.kaniko.path)
+        if [ -d "opa-envoy-plugin" ]
+        then
+          cd opa-envoy-plugin
+          git pull
+        else
+          git clone https://github.com/yerinu2019/opa-envoy-plugin
+          cd opa-envoy-plugin
+        fi
+        make build-tekton
+        #cp /go/opa-envoy-plugin/.Dockerfile_amd64 $(workspaces.kaniko.path)
+        #cp /go/opa-envoy-plugin/opa_envoy_linux_amd64 $(workspaces.kaniko.path)
+    - name: build-image
+      image: gcr.io/kaniko-project/executor:latest
+      volumeMounts:
+        - mountPath: /kaniko/.docker/config.json
+          name: dockerhub-credential-volume
+          subPath: .dockerconfigjson
+      # specifying DOCKER_CONFIG is required to allow kaniko to detect docker credential
+      env:
+          - name: "DOCKER_CONFIG"
+            value: "/tekton/home/.docker/"
+      command:
+        - /kaniko/executor
+      args:
+        - --dockerfile=$(workspaces.kaniko.path)/opa-envoy-plugin/.Dockerfile_amd64
+        - --destination=yerinu2019/opa-envoy-plugin
+        - --context=$(workspaces.kaniko.path)/opa-envoy-plugin
