@@ -8,11 +8,11 @@ secrets:
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
-  name: opa-envoy-plugin-build-task-run
+  name: build-and-push
 spec:
   serviceAccountName: dockerhub-sa
   taskRef:
-    name: opa-envoy-plugin-build
+    name: build-and-push
   workspaces:
     - name: kaniko
       persistentVolumeClaim:

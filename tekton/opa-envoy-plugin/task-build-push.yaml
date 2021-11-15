@@ -1,0 +1,47 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-and-push
+spec:
+  volumes:
+    - name: kaniko-secret
+      secret:
+        secretName: dockerhub-credential
+        items:
+          - key: .dockerconfigjson
+            path: config.json
+  workspaces:
+    - name: kaniko
+      description: folder for built docker file and binary file
+  steps:
+    - name: build-source
+      image: yerinu2019/go-make-1.17
+      script: |
+        #!/usr/bin/env bash
+        set -xe
+        cd $(workspaces.kaniko.path)
+        pwd
+        if [ -d "opa-envoy-plugin" ]
+        then
+          cd opa-envoy-plugin
+          rm -f qemu_compile_*
+          git pull
+        else
+          git clone https://github.com/yerinu2019/opa-envoy-plugin
+          cd opa-envoy-plugin
+        fi
+        make build-tekton
+    - name: build-image
+      image: gcr.io/kaniko-project/executor:debug
+      env:
+        - name: "DOCKER_CONFIG"
+          value: "/kaniko/.docker/"
+      command:
+        - /kaniko/executor
+        - --dockerfile=.Dockerfile_amd64
+        - --destination=yerinu2019/opa-envoy-plugin:latest
+        - --context=/workspace/kaniko/opa-envoy-plugin
+        - --verbosity=debug
+      volumeMounts:
+        - name: kaniko-secret
+          mountPath: /kaniko/.docker/
