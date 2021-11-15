@@ -5,6 +5,33 @@ metadata:
 secrets:
   - name: dockerhub-credential
 ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: dockerfile
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  hostPath:
+    path: /home/docker/kaniko # replace with local directory, such as "/home/<user-name>/kaniko"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dockerfile-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+  storageClassName: local-storage
+---
 apiVersion: tekton.dev/v1beta1
 kind: TaskRun
 metadata:
