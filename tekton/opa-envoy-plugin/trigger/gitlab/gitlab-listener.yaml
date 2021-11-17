@@ -77,7 +77,7 @@ spec:
                         - /kaniko/executor
                         - --dockerfile=.Dockerfile_amd64
                         - --destination=yerinu2019/opa-envoy-plugin:latest
-                        - --context=/workspace/kaniko/opa-envoy-plugin
+                        - --context=$(inputs.resources.source.path)
                         - --verbosity=debug
                       volumeMounts:
                         - name: kaniko-secret
