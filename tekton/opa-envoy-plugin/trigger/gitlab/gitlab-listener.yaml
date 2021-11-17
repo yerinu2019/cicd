@@ -48,6 +48,13 @@ spec:
                     resources:
                       - name: source
                         type: git
+                  volumes:
+                    - name: kaniko-secret
+                      secret:
+                        secretName: dockerhub-credential
+                        items:
+                          - key: .dockerconfigjson
+                            path: config.json
                   steps:
                     - name: build-source
                       image: yerinu2019/go-make-1.17
