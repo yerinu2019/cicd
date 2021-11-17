@@ -1,2 +1,2 @@
 #!/bin/bash
-kubectl port-forward service/el-gitlab-listener 80
+kubectl port-forward service/el-gitlab-listener 8080
