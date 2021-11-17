@@ -50,31 +50,31 @@ spec:
                         type: git
                   steps:
                     - name: build-source
-                        image: yerinu2019/go-make-1.17
-                        script: |
-                          #!/usr/bin/env bash
-                          set -xe
-                          cd $(inputs.resources.source.path)
-                          pwd
-                          ls -al
-                          echo "building source"
-                          make build-tekton
-                          echo "after build"
-                          ls -al
+                      image: yerinu2019/go-make-1.17
+                      script: |
+                        #!/usr/bin/env bash
+                        set -xe
+                        cd $(inputs.resources.source.path)
+                        pwd
+                        ls -al
+                        echo "building source"
+                        make build-tekton
+                        echo "after build"
+                        ls -al
                     - name: build-image
-                        image: gcr.io/kaniko-project/executor:debug
-                        env:
-                          - name: "DOCKER_CONFIG"
-                            value: "/kaniko/.docker/"
-                        command:
-                          - /kaniko/executor
-                          - --dockerfile=.Dockerfile_amd64
-                          - --destination=yerinu2019/opa-envoy-plugin:latest
-                          - --context=/workspace/kaniko/opa-envoy-plugin
-                          - --verbosity=debug
-                        volumeMounts:
-                          - name: kaniko-secret
-                            mountPath: /kaniko/.docker/
+                      image: gcr.io/kaniko-project/executor:debug
+                      env:
+                        - name: "DOCKER_CONFIG"
+                          value: "/kaniko/.docker/"
+                      command:
+                        - /kaniko/executor
+                        - --dockerfile=.Dockerfile_amd64
+                        - --destination=yerinu2019/opa-envoy-plugin:latest
+                        - --context=/workspace/kaniko/opa-envoy-plugin
+                        - --verbosity=debug
+                      volumeMounts:
+                        - name: kaniko-secret
+                          mountPath: /kaniko/.docker/
                 inputs:
                   resources:
                     - name: source
