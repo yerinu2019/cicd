@@ -1,0 +1,149 @@
+
+==============================================================================
+                              DIAGNOSTIC RESULTS                              
+==============================================================================
+
+------------------------------------------------------------------------------
+                                   Latency                                    
+------------------------------------------------------------------------------
+Operation       Size  Trials  Mean (ms)  Std Dev (ms)  Median (ms)  90th % (ms)
+=========  =========  ======  =========  ============  ===========  ===========
+   Delete        0 B       5       29.3           6.1         30.4         35.9 
+   Delete      1 KiB       5       31.6           2.1         32.1         33.8 
+   Delete    100 KiB       5       30.5           5.2         29.5         36.2 
+   Delete      1 MiB       5       34.4           6.4         39.3         39.8 
+ Download        0 B       5       42.9           4.5         39.8         48.4 
+ Download      1 KiB       5       62.4          12.6         65.5         76.1 
+ Download    100 KiB       5       55.8           3.9         56.2         59.9 
+ Download      1 MiB       5       63.3          10.5         60.9         74.2 
+ Metadata        0 B       5       21.6           5.8         19.2         27.8 
+ Metadata      1 KiB       5       19.3           3.0         18.2         23.0 
+ Metadata    100 KiB       5       18.7           1.6         18.7         20.5 
+ Metadata      1 MiB       5       19.1           3.3         17.8         23.1 
+   Upload        0 B       5       55.6           6.1         59.3         60.1 
+   Upload      1 KiB       5       82.8          18.8         81.9        102.2 
+   Upload    100 KiB       5       74.3           5.6         71.7         80.6 
+   Upload      1 MiB       5      173.5          81.7        118.3        274.9 
+
+------------------------------------------------------------------------------
+                               Write Throughput                               
+------------------------------------------------------------------------------
+Copied 5 420 KiB file(s) for a total transfer size of 2.05 MiB.
+Write throughput: 36.39 Mibit/s.
+Parallelism strategy: None
+
+------------------------------------------------------------------------------
+                               Read Throughput                                
+------------------------------------------------------------------------------
+Copied 5 420 KiB file(s) for a total transfer size of 2.05 MiB.
+Read throughput: 48.61 Mibit/s.
+Parallelism strategy: None
+
+------------------------------------------------------------------------------
+                              System Information                              
+------------------------------------------------------------------------------
+IP Address: 
+  172.17.0.4
+Temporary Directory: 
+  /tmp
+Bucket URI: 
+  gs://perftest-osl-standard/
+gsutil Version: 
+  5.4
+boto Version: 
+  2.49.0
+Measurement time: 
+ 2021-11-18 07:53:51 PM 
+Running on GCE: 
+  True
+GCE Instance:
+	
+Bucket location: 
+  US-EAST1
+Bucket storage class: 
+  STANDARD
+Google Server: 
+  ns1
+Google Server IP Addresses: 
+  64.233.170.128
+  108.177.11.128
+  74.125.26.128
+  172.217.193.128
+  172.217.204.128
+  172.217.203.128
+  142.250.98.128
+  74.125.31.128
+  74.125.134.128
+  173.194.210.128
+  173.194.215.128
+  173.194.216.128
+  173.194.217.128
+  173.194.218.128
+Google Server Hostnames: 
+  vy-in-f128.1e100.net
+  vz-in-f128.1e100.net
+  uc-in-f128.1e100.net
+  ud-in-f128.1e100.net
+  ue-in-f128.1e100.net
+  uf-in-f128.1e100.net
+  uh-in-f128.1e100.net
+  va-in-f128.1e100.net
+  vj-in-f128.1e100.net
+  vn-in-f128.1e100.net
+  vt-in-f128.1e100.net
+  vu-in-f128.1e100.net
+  vw-in-f128.1e100.net
+  vx-in-f128.1e100.net
+Google DNS thinks your IP is: 
+  74.125.75.71
+CPU Count: 
+  4
+CPU Load Average: 
+  [0.08, 0.24, 0.21]
+Total Memory: 
+  15.27 GiB
+Free Memory: 
+  14.53 GiB
+TCP segments sent during test:
+  15312
+TCP segments received during test:
+  3148
+TCP segments retransmit during test:
+  0
+Disk Counter Deltas:
+    disk    reads   writes   rbytes   wbytes    rtime    wtime 
+   dm-0        0        0        0        0        0        0 
+   sda1      141        1  5918720     4096       73        1 
+  sda10        0        0        0        0        0        0 
+  sda11        0        0        0        0        0        0 
+  sda12        0        0        0        0        0        0 
+   sda2        0        0        0        0        0        0 
+   sda3        0        0        0        0        0        0 
+   sda4        0        0        0        0        0        0 
+   sda5        0        0        0        0        0        0 
+   sda6        0        0        0        0        0        0 
+   sda7        0        0        0        0        0        0 
+   sda8        0        0        0        0        0        0 
+   sda9        0        0        0        0        0        0 
+   sdb1        0        2        0    28672        0       28 
+TCP /proc values:
+    tcp_timestamps = 1
+   tcp_sack = 1
+   tcp_window_scaling = 1
+Boto HTTPS Enabled: 
+  True
+Requests routed through proxy: 
+  False
+Latency of the DNS lookup for Google Storage server (ms): 
+  1.8
+Latencies connecting to Google Storage server IPs (ms):
+  173.194.218.128 = 1.3
+
+------------------------------------------------------------------------------
+                          In-Process HTTP Statistics                          
+------------------------------------------------------------------------------
+Total HTTP requests made: 94
+HTTP 5xx errors: 0
+HTTP connections broken: 0
+Availability: 100%
+
