@@ -1,1 +1,3 @@
+apiVersion: v2
 name: master-application
+version: 0.1.0

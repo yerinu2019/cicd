@@ -1,1 +1,3 @@
+apiVersion: v2
 name: argocd-istio-app
+version: 0.1.0
