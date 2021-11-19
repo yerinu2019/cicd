@@ -27,6 +27,5 @@ function delete-gke() {
       exit 1
   fi
 
-  echo "Deleting $1 cluster..."
   gcloud container clusters delete $1 --zone $2 -q
 }
