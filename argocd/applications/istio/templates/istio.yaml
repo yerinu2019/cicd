@@ -1,11 +1,19 @@
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
+metadata:
+  name: installation
+  namespace: istio-system
 spec:
   profile: demo
   meshConfig:
     accessLogFile: /dev/stdout
     enableTracing: true
   components:
+    pilot:
+      enabled: true
+    ingressGateways:
+      - name: istio-ingressgateway
+        enabled: true
     egressGateways:
       - name: istio-egressgateway
         enabled: true
