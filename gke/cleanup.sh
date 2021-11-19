@@ -1,3 +1,4 @@
 #!/bin/bash
-echo "Deleting cicd cluster..."
-gcloud container clusters delete cicd --zone us-west1-a -q
+source ../bash/gke-func.sh
+gke-delete "cicd" "us-west1-a"
+
