@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# include this script in the ~/.bashrc
 function setenv() {
   for envName in "$@"
   do
