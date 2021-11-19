@@ -7,8 +7,8 @@ CICD=`gcloud container clusters list | grep cicd`
 echo $CICD
 if [[ -z "${CICD}" ]]; then
   echo "Create GKE CICD"
-  #gcloud container clusters create cicd --num-nodes=1
-  #gcloud container clusters get-credentials cicd
+  gcloud container clusters create cicd --num-nodes=1
+  gcloud container clusters get-credentials cicd
 else
   echo "GKE CICD exists."
 fi
