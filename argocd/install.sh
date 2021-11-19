@@ -1,6 +1,7 @@
 #!/bin/bash
 #echo "Enable minikube ingress"
 #minikube addons enable ingress
+./create-cluster.sh
 
 kubectl config use-context gke_monorepotest-323514_us-west1-a_cicd
 
