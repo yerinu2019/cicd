@@ -20,4 +20,3 @@ spec:
   syncPolicy:
     automated:
       prune: true
-    validate: true
