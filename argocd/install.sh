@@ -4,12 +4,8 @@
 
 kubectl config use-context gke_monorepotest-323514_us-west1-a_cicd
 
-echo "Install helm..."
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
 kubectl create namespace argocd
-helm repo add argo https://argoproj.github.io/argo-helm
-helm install argocd -n argocd argo/argocd --values values.yaml
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 echo "kubectl get ingress -n argocd"
 kubectl get ingress -n argocd
