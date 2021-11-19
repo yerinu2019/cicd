@@ -16,6 +16,7 @@ kubectl -n argocd get all
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
 
+
 #echo "kubectl get ingress -n argocd"
 #kubectl get ingress -n argocd
 #
