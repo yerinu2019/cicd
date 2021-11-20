@@ -27,5 +27,12 @@ function delete-gke() {
       exit 1
   fi
 
-  gcloud container clusters delete $1 --zone $2 -q
+  GKE=`gcloud container clusters list | grep $1`
+  echo $GKE
+
+  if [[ -z "${GKE}" ]]; then
+    echo "GKE $1 does not exists."
+  else
+    gcloud container clusters delete $1 --zone $2 -q
+  fi
 }
