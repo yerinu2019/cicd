@@ -6,6 +6,11 @@ type: Opaque
 stringData:
   secretToken: "1234567"
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: authz-builder-sa
+---
 apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
@@ -68,11 +73,6 @@ spec:
                           opa build -b -o authz-bundle.tar.gz .
                           echo "upload"
                           gsutil cp -p authz-bundle.tar.gz gs://test-opa-policy-bundles
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: authz-builder-sa
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
