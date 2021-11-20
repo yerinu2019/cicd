@@ -3,7 +3,7 @@ kind: Application
 metadata:
   name: authz
   finalizers:
-    - resources-finalizer.argocd.argoproj.io
+
 spec:
   project: default
   source:
