@@ -57,7 +57,7 @@ spec:
                             path: config.json
                   steps:
                     - name: build-source
-                      image: yerinu2019/go-make-1.17
+                      image: yerinu2019/opa-gsutil
                       script: |
                         #!/usr/bin/env bash
                         set -xe
