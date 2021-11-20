@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/yerinu2019/authz.git
     targetRevision: HEAD
-    path: simulation/single-cluster-minikube-policy/crd
+    path: simulation/single-cluster/minikube/policy/crd
   destination:
     namespace: api-istio
     server: https://kubernetes.default.svc
