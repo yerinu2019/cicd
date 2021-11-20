@@ -1,5 +1,5 @@
 FROM golang:1.17-buster
-MAINTAINER yerinu2012
+MAINTAINER yerinu2019
 # vi: ft=dockerfile
 
 RUN apt-get update && apt-get install curl \
