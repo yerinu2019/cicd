@@ -3,7 +3,7 @@ kind: Application
 metadata:
   name: master-app
   finalizers:
-    - resources-finalizer.argocd.argoproj.io   # what is this ???
+    #- resources-finalizer.argocd.argoproj.io   # what is this ???
 spec:
   project: default
   source:
