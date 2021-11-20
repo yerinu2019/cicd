@@ -14,6 +14,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: el-gitlab-listener
+                name: el-authz-gitlab-listener
                 port:
                   number: 8080
