@@ -9,7 +9,7 @@ kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 echo "Install argocd cli"
-curl -sSL -o $HOME/bin https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && chmod +x $HOME/bin/argocd
+curl -sSL -o $HOME/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && chmod +x $HOME/bin/argocd
 
 echo "Expose argocd api server"
 kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
