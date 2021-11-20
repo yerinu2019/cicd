@@ -27,7 +27,7 @@ spec:
             - name: eventTypes
               value:
                 - "Push Hook"
-        - cel:
+#        - cel:
 #            filter: >-
 #              filter....
 #            overlays:
