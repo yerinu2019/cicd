@@ -68,3 +68,13 @@ spec:
                         opa build -b -o authz-bundle.tar.gz .
                         echo "upload"
                         gsutil cp -p authz-bundle.tar.gz gs://test-opa-policy-bundles
+                inputs:
+                  resources:
+                    - name: source
+                      resourceSpec:
+                        type: git
+                        params:
+                          - name: revision
+                            value: $(tt.params.gitrevision)
+                          - name: url
+                            value: $(tt.params.gitrepositoryurl)
