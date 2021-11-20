@@ -9,27 +9,27 @@ stringData:
 apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
-  name: authz-gitlab-listener
+  name: gitlab-listener
 spec:
   serviceAccountName: tekton-triggers-example-sa
   triggers:
-    - name: rego-build-trigger
+    - name: gitlab-push-events-trigger
       interceptors:
         - name: "verify-gitlab-payload"
-            ref:
-              name: "gitlab"
-              kind: ClusterInterceptor
-            params:
-              - name: secretRef
-                value:
-                  secretName: "gitlab-secret"
-                  secretKey: "secretToken"
-              - name: eventTypes
-                value:
-                  - "Push Hook"
+          ref:
+            name: "gitlab"
+            kind: ClusterInterceptor
+          params:
+            - name: secretRef
+              value:
+                secretName: "gitlab-secret"
+                secretKey: "secretToken"
+            - name: eventTypes
+              value:
+                - "Push Hook"
       bindings:
         - name: gitrevision
-            value: $(body.checkout_sha)
+          value: $(body.checkout_sha)
         - name: gitrepositoryurl
           value: $(body.repository.git_http_url)
       template:
@@ -55,16 +55,16 @@ spec:
                         items:
                           - key: .dockerconfigjson
                             path: config.json
-                    steps:
-                      - name: build-source
-                        image: yerinu2019/opa-gsutil:latest
-                        script: |
-                          #!/usr/bin/env bash
-                          set -xe
-                          cd $(inputs.resources.source.path)
-                          cd simulation/single-cluster/minikube/policy/rego
-                          pwd
-                          ls -al
-                          opa build -b -o authz-bundle.tar.gz .
-                          echo "upload"
-                          gsutil cp -p authz-bundle.tar.gz gs://test-opa-policy-bundles
+                  steps:
+                    - name: build-source
+                      image: yerinu2019/go-make-1.17
+                      script: |
+                        #!/usr/bin/env bash
+                        set -xe
+                        cd $(inputs.resources.source.path)
+                        cd simulation/single-cluster/minikube/policy/rego
+                        pwd
+                        ls -al
+                        opa build -b -o authz-bundle.tar.gz .
+                        echo "upload"
+                        gsutil cp -p authz-bundle.tar.gz gs://test-opa-policy-bundles
