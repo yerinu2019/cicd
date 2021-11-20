@@ -19,6 +19,9 @@ kubectl -n argocd get all
 echo "Initial admin secret"
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
+echo "Install authz policy"
+kubectl apply -k applications/authz/base
+
 
 
 #echo "kubectl get ingress -n argocd"
