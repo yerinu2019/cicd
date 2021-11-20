@@ -9,7 +9,7 @@ stringData:
 apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
-  name: gitlab-listener
+  name: authz-gitlab-listener
 spec:
   serviceAccountName: tekton-triggers-example-sa
   triggers:
