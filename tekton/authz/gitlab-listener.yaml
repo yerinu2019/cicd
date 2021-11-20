@@ -27,12 +27,6 @@ spec:
               - name: eventTypes
                 value:
                   - "Push Hook"
-#        - cel:
-#            filter: >-
-#              filter....
-#            overlays:
-#              - key: working-dir
-#                expression: 'expression...'
       bindings:
         - name: gitrevision
             value: $(body.checkout_sha)
