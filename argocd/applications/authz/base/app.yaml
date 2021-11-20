@@ -5,7 +5,7 @@ metadata:
   finalizers:
 
 spec:
-  project: authz
+  project: default
   source:
     repoURL: https://github.com/yerinu2019/authz.git
     targetRevision: HEAD
