@@ -1,9 +1,13 @@
-.PHONY: all bin kubectl opa helm tkn argocd-cli gke-cicd external-dns external-dns-verify \
+.PHONY: all bin tools kubectl kustomize opa helm tkn argocd-cli gke-cicd external-dns external-dns-verify \
 	cleanup gke-cicd-cleanup external-dns-cleanup external-dns-verify-cleanup \
 	tekton authz-rego
 all: opa tkn argocd-cli external-dns external-dns-verify tekton
 bin:
 	./setupbin.sh
+tools: bin kustomize opa helm tkn argocd-cli kubectl
+
+kustomize:
+	curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
 kubectl:
 	./kubectl.sh
 opa: bin
