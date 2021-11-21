@@ -4,20 +4,22 @@ metadata:
   namespace: tekton-pipelines
 resources:
   - dashboard.yaml
-#target:
-#  kind: Service
-#  namespace: tekton-pipelines
-#  name: tekton-dashboard
-patchesStrategicMerge:
-  - |-
-    apiVersion: apps/v1
-    kind: Service
-    metadata:
-      name: tekton-dashboard
+patchesJson6902:
+  - target:
+      version: v1
+      kind: Service
       namespace: tekton-pipelines
-    spec:
-      type: LoadBalancer
-      ports:
-        - name: http
-          port: 80
-          targetPort: 9097
+      name: tekton-dashboard
+    patch: |-
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer
+      - op: replace
+        path: /spec/ports/0/port
+        value: 80
+      - op: replace
+        path: /spec/ports/0/targetPort
+        value: 80
+      - op: replace
+        path: /metadata/annotations/external-dns.alpha.kubernetes.io/hostname
+        value: tekton.svc.yerinu.com.
