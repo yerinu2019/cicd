@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: tekton-pipelines
+resources:
+  - storage.googleapis.com/tekton-releases/dashboard/latest/tekton-dashboard-release.yaml
+patchesStrategicMerge:
+  - |-
+    apiVersion: apps/v1
+    kind: Service
+    metadata:
+      name: tekton-dashboard
+    spec:
+      type: LoadBalancer
+      ports:
+        - port: 9097
+          targetPort: 80
