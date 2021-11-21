@@ -15,7 +15,7 @@ argocd-cli: bin
 	./argocd-cli.sh
 gke-cicd: kubectl
 	./gke-cicd.sh
-external-dns: helm gke-cicd
+external-dns: gke-cicd
 	./external-dns.sh
 external-dns-verify: external-dns
 	./external-dns-verify.sh
