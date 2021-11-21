@@ -26,13 +26,18 @@ function create-gke() {
   if [[ -z "${GKE}" ]]; then
     echo "Create GKE $MY_CLUSTER_NAME"
     # Create GKE Cluster
-    gcloud container clusters create \
-      --num-nodes 1 \
-      --scopes $SCOPES \
-      --workload-pool=$MY_PROJECT.svc.id.goog \
-      $MY_CLUSTER_NAME
+#    gcloud container clusters create \
+#      --num-nodes 1 \
+#      --scopes $SCOPES \
+#      --workload-pool=$MY_PROJECT.svc.id.goog \
+#      $MY_CLUSTER_NAME
 
-    set-myself-admin $MY_CLUSTER_NAME
+    gcloud container clusters create \
+          --num-nodes 1 \
+          --scopes $SCOPES \
+          $MY_CLUSTER_NAME
+
+    set-myself-admin $MY_CLUSTER_NAME $MY_ZONE
   else
     echo "GKE $MY_CLUSTER_NAME exists."
   fi
