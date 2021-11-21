@@ -14,6 +14,9 @@ metadata:
     external-dns.alpha.kubernetes.io/hostname: authz-rego.svc.yerinu.com.
 spec:
   serviceAccountName: tekton-triggers-example-sa
+  resources:
+    kubernetesResource:
+      serviceType: LoadBalancer
   triggers:
     - name: gitlab-push-events-trigger
       interceptors:
