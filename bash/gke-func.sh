@@ -1,21 +1,23 @@
 #!/bin/bash
 
 function create-gke() {
+  # desired scopes - default + CloudDNS access
+  SCOPES=("https://www.googleapis.com/auth/devstorage.read_only"
+          "https://www.googleapis.com/auth/logging.write"
+          "https://www.googleapis.com/auth/monitoring"
+          "https://www.googleapis.com/auth/servicecontrol"
+          "https://www.googleapis.com/auth/service.management.readonly"
+          "https://www.googleapis.com/auth/trace.append"
+          "https://www.googleapis.com/auth/ndev.clouddns.readwrite"
+  )
+
   MY_SCOPES=$(IFS=,; echo "${SCOPES[*]}")               # scope list (command seperated)
   MY_CLUSTER_NAME=${1:-"test-cluster"}                  # gke cluster name
   MY_ZONE=${2:-"us-central1-a"}                         # default zone if not set
   MY_REGION=${3:-"us-central1"}                         # default region if not set
   MY_PROJECT=${4:-"$(gcloud config get-value project)"} # default project if not set
 
-  # desired scopes - default + CloudDNS access
-    SCOPES=("https://www.googleapis.com/auth/devstorage.read_only"
-            "https://www.googleapis.com/auth/logging.write"
-            "https://www.googleapis.com/auth/monitoring"
-            "https://www.googleapis.com/auth/servicecontrol"
-            "https://www.googleapis.com/auth/service.management.readonly"
-            "https://www.googleapis.com/auth/trace.append"
-            "https://www.googleapis.com/auth/ndev.clouddns.readwrite"
-    )
+
 
   gcloud config set project $MY_PROJECT
   gcloud config set compute/zone $MY_ZONE
@@ -28,13 +30,13 @@ function create-gke() {
     # Create GKE Cluster
 #    gcloud container clusters create \
 #      --num-nodes 1 \
-#      --scopes $SCOPES \
+#      --scopes $MY_SCOPES \
 #      --workload-pool=$MY_PROJECT.svc.id.goog \
 #      $MY_CLUSTER_NAME
 
     gcloud container clusters create \
           --num-nodes 1 \
-          --scopes $SCOPES \
+          --scopes $MY_SCOPES \
           $MY_CLUSTER_NAME
 
     set-myself-admin $MY_CLUSTER_NAME $MY_ZONE
