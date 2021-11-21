@@ -4,6 +4,8 @@ metadata:
   namespace: tekton-pipelines
 resources:
   - dashboard.yaml
+commonAnnotations:
+  external-dns.alpha.kubernetes.io/hostname: tekton.svc.yerinu.com.
 patchesJson6902:
   - target:
       version: v1
@@ -20,6 +22,3 @@ patchesJson6902:
       - op: replace
         path: /spec/ports/0/targetPort
         value: 80
-      - op: replace
-        path: /metadata/annotations/external-dns.alpha.kubernetes.io\/hostname
-        value: tekton.svc.yerinu.com.
