@@ -28,7 +28,7 @@ function create-gke() {
     # Create GKE Cluster
     gcloud container clusters create \
       --num-nodes 1 \
-      --scopes $MY_SCOPES \
+      --scopes $SCOPES \
       --workload-pool=$MY_PROJECT.svc.id.goog \
       $MY_CLUSTER_NAME
 
