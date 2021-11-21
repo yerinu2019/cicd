@@ -7,6 +7,7 @@ patchesStrategicMerge:
     kind: Service
     metadata:
       name: tekton-dashboard
+      namespace: tekton-pipelines
     spec:
       type: LoadBalancer
       ports:
