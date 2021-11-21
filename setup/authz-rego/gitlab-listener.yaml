@@ -11,7 +11,7 @@ kind: EventListener
 metadata:
   name: authz-repo-gitlab-listener
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: authzrepo.svc.yerinu.com.
+    external-dns.alpha.kubernetes.io/hostname: authz-rego.svc.yerinu.com.
 spec:
   serviceAccountName: tekton-triggers-example-sa
   triggers:
