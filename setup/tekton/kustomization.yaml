@@ -5,7 +5,7 @@ metadata:
 resources:
   - dashboard.yaml
 patches:
-  - patch: patch.yaml
+  - path: patch.yaml
     target:
       kind: Service
       namespace: tekton-pipelines
