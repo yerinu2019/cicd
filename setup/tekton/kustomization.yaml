@@ -20,6 +20,6 @@ patchesJson6902:
       - op: replace
         path: /spec/ports/0/targetPort
         value: 80
-      - op: replace
+      - op: add
         path: "/metadata/annotations/external-dns.alpha.kubernetes.io~1hostname"
         value: tekton.svc.yerinu.com.
