@@ -1,5 +1,5 @@
 .PHONY: all bin kubectl opa helm tkn argocd-cli gke-cicd external-dns external-dns-verify \
-	cleanup gke-cicd-cleanup external-dns-cleanup
+	cleanup gke-cicd-cleanup external-dns-cleanup external-dns-verify-cleanup
 all: opa tkn argocd-cli external-dns external-dns-verify
 bin:
 	./setupbin.sh
@@ -23,4 +23,6 @@ gke-cicd-cleanup:
 	./gke-cicd-cleanup.sh
 external-dns-cleanup:
 	./external-dns-cleanup.sh
-cleanup: external-dns-cleanup gke-cicd-cleanup
+external-dns-verify-cleanup:
+	./external-dns-verify-cleanup.sh
+cleanup: external-dns-verify-cleanup external-dns-cleanup gke-cicd-cleanup
