@@ -9,7 +9,9 @@ stringData:
 apiVersion: triggers.tekton.dev/v1beta1
 kind: EventListener
 metadata:
-  name: authz-gitlab-listener
+  name: authz-repo-gitlab-listener
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: authzrepo.svc.yerinu.com.
 spec:
   serviceAccountName: tekton-triggers-example-sa
   triggers:

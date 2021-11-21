@@ -27,7 +27,7 @@ external-dns-verify: external-dns
 tekton:
 	./tekton.sh
 authz-rego: tekton
-	kubectl -f authz-rego/gitlab-listener.yaml
+	./authz-rego.sh
 gke-cicd-cleanup:
 	./gke-cicd-cleanup.sh
 external-dns-cleanup:
