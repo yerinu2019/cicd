@@ -3,7 +3,7 @@
 function create-gke() {
   MY_SCOPES=$(IFS=,; echo "${SCOPES[*]}")               # scope list (command seperated)
   MY_CLUSTER_NAME=${1:-"test-cluster"}                  # gke cluster name
-  MY_ZONE=${2:-"us-central1-1"}                         # default zone if not set
+  MY_ZONE=${2:-"us-central1-a"}                         # default zone if not set
   MY_REGION=${3:-"us-central1"}                         # default region if not set
   MY_PROJECT=${4:-"$(gcloud config get-value project)"} # default project if not set
 
