@@ -13,7 +13,7 @@ tkn: bin
 	./tkn.sh
 argocd-cli: bin
 	./argocd-cli.sh
-gke-cicd: kubectl
+gke-cicd:
 	./gke-cicd.sh
 external-dns: gke-cicd
 	./external-dns.sh
