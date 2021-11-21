@@ -40,7 +40,7 @@ function create-gke() {
 
 function delete-gke() {
   MY_CLUSTER_NAME=${1:-"test-cluster"}                  # gke cluster name
-  MY_ZONE=${2:-"us-central1-1"}                         # default zone if not set
+  MY_ZONE=${2:-"us-central1-a"}                         # default zone if not set
 
   GKE=`gcloud container clusters list | grep $MY_CLUSTER_NAME`
   echo $GKE
