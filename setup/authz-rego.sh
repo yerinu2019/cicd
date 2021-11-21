@@ -1,3 +1,3 @@
 #!/bin/bash
 
-kubectl apply -f authz-rego/gitlab-listener.yaml
+kubectl apply -f ./authz-rego/gitlab-listener.yaml
