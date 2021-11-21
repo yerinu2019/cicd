@@ -4,14 +4,4 @@ namespace: tekton-pipelines
 resources:
   - dashboard.yaml
 patchesStrategicMerge:
-  - |-
-    apiVersion: apps/v1
-    kind: Service
-    metadata:
-      name: tekton-dashboard
-      namespace: tekton-pipelines
-    spec:
-      type: LoadBalancer
-      ports:
-        - port: 9097
-          targetPort: 80
+  - patch.yaml
