@@ -60,3 +60,50 @@ function set-myself-admin() {
   kubectl create clusterrolebinding cluster-admin-me \
       --clusterrole=cluster-admin --user="$(gcloud config get-value account)"
 }
+
+function create-gcp-service-account() {
+  if [ "$#" -ne 1 ]; then
+      echo "Usage: create-gcp-service-account <gcp service account>"
+      exit -1
+  fi
+  GSA=$1
+  CHECK=`gcloud iam service-accounts list | grep ${GSA}@`
+  if [[ -z "${GKE}" ]]; then
+    gcloud iam service-accounts create $GSA
+  else
+    echo "GSA $GSA exists."
+  fi
+}
+
+function bind-role() {
+  if [ "$#" -ne 2 ]; then
+      echo "Usage: bind-role <gcp service account> <role>"
+      exit -1
+  fi
+  GCP_PROJECT_ID=`gcloud config get-value project`
+  GCP_SERVICE_ACCOUNT=$1
+  ROLE=$2
+  gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
+      --member "serviceAccount:${GCP_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com" \
+      --role $ROLE
+}
+
+function use-workload-identity() {
+  if [ "$#" -ne 3 ]; then
+      echo "Usage: use-workload-identity <gcp service account> <k8s namespace> <k8s service account>"
+      exit -1
+  fi
+  GCP_PROJECT_ID=`gcloud config get-value project`
+  GCP_SERVICE_ACCOUNT=$1
+  K8S_NAMESPACE=$2
+  K8S_SERVICE_ACCOUNT=$3
+
+  gcloud iam service-accounts add-iam-policy-binding ${GCP_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com \
+      --role roles/iam.workloadIdentityUser \
+      --member "serviceAccount:${GCP_PROJECT_ID}.svc.id.goog[${K8S_NAMESPACE}/${K8S_SERVICE_ACCOUNT}]"
+
+  kubectl -n ${K8S_NAMESPACE} apply sa ${K8S_SERVICE_ACCOUNT}
+  kubectl annotate sa \
+      -n ${K8S_NAMESPACE} ${K8S_SERVICE_ACCOUNT} \
+      iam.gke.io/gcp-service-account=${GCP_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com
+}
