@@ -102,7 +102,7 @@ function use-workload-identity() {
       --role roles/iam.workloadIdentityUser \
       --member "serviceAccount:${GCP_PROJECT_ID}.svc.id.goog[${K8S_NAMESPACE}/${K8S_SERVICE_ACCOUNT}]"
 
-  kubectl -n ${K8S_NAMESPACE} apply sa ${K8S_SERVICE_ACCOUNT}
+  kubectl -n ${K8S_NAMESPACE} create sa ${K8S_SERVICE_ACCOUNT}
   kubectl annotate sa \
       -n ${K8S_NAMESPACE} ${K8S_SERVICE_ACCOUNT} \
       iam.gke.io/gcp-service-account=${GCP_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com
