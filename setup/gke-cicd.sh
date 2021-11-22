@@ -9,14 +9,14 @@ gcloud container clusters update $CLUSTER_NAME \
 
 kubectl apply -f gcp-service-account.yaml
 
-GCP_PROJECT_ID=`gcloud config get-value project`
-GCP_SERVICE_ACCOUNT="cicd-sa"
-K8S_NAMESPACE="default"
-K8S_SERVICE_ACCOUNT="cicd-sa"
+export GCP_PROJECT_ID=`gcloud config get-value project`
+export GCP_SERVICE_ACCOUNT="cicd-sa"
+export K8S_NAMESPACE="default"
+export K8S_SERVICE_ACCOUNT="cicd-sa"
 
 gcloud projects add-iam-policy-binding $GCP_PROJECT_ID \
     --member "serviceAccount:${GCP_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com" \
-    --role "ROLE_NAME"
+    --role "roles/storage.objectAdmin"
 
 gcloud iam service-accounts add-iam-policy-binding ${GCP_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com \
     --role roles/iam.workloadIdentityUser \
