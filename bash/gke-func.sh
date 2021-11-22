@@ -62,8 +62,37 @@ function switch-gke() {
 
 function current-gke-cluster() {
   IFS='_' read -ra ARR <<< `kubectl config current-context`
-  __=${ARR[3]}
-  echo $__
+  if [ ${ARR[0]} -eq "gke"]; then
+    __=${ARR[3]}
+  else
+    __=""
+  fi
+}
+
+function create-istio-gke() {
+  if [ "$#" < 1 ]; then
+    echo "Usage: create-istio-gke <cluster-name> [<zone> <region> <gcp-project>]"
+    exit -1
+  fi
+  MY_CLUSTER_NAME=$1                                    # gke cluster name
+  MY_ZONE=${2:-"us-central1-a"}                         # default zone if not set
+  MY_REGION=${3:-"us-central1"}                         # default region if not set
+
+  create-gke $MY_CLUSTER_NAME $MY_ZONE $MY_REGION
+  current-gke_cluster
+  CURRENT_CLUSTER=$__
+
+  SWITCHED=false
+  if [ $CURRENT_CLUSTER -ne $MY_CLUSTER_NAME ]; then
+    switch-gke $MY_CLUSTER_NAME
+    SWITCHED=true
+  fi
+  echo "Install Istio"
+  istioctl install --set profile=demo -y
+
+  if [ "$SWITCHED" = true ]; then
+    switch-gke  $CURRENT_CLUSTER
+  fi
 }
 
 function set-myself-admin() {

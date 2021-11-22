@@ -11,7 +11,7 @@ tools: bin kustomize opa helm tkn argocd-cli kubectl istioctl
 istioctl:
 	./istioctl.sh
 
-infra: gke-cicd external-dns tekton argocd
+infra: gke-cicd gke-cluster1 external-dns tekton argocd
 
 argocd:
 	./argocd-server.sh
@@ -22,18 +22,27 @@ apps: authz-rego authz-acl
 
 kustomize:
 	curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+
 kubectl:
 	./kubectl.sh
+
 opa: bin
 	./opa.sh
+
 helm: bin
 	./helm.sh
+
 tkn: bin
 	./tkn.sh
+
 argocd-cli: bin
 	./argocd-cli.sh
 gke-cicd:
 	./gke-cicd.sh
+
+gke-cluster-1:
+	./gke-cluster-1.sh
+
 external-dns: gke-cicd
 	./external-dns.sh
 external-dns-verify: external-dns
