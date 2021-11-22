@@ -14,7 +14,8 @@ spec:
       recurse: true
   destination:
     namespace: api-istio
-    server: https://kubernetes.default.svc
+    name: gke_monorepotest-323514_us-central1-a_cluster1
+    #server: https://kubernetes.default.svc
   syncPolicy:
     automated:
       prune: true
