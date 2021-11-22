@@ -1,6 +1,6 @@
 .PHONY: all bin tools infra kubectl kustomize opa helm tkn argocd-cli gke-cicd external-dns external-dns-verify \
 	cleanup gke-cicd-cleanup external-dns-cleanup external-dns-verify-cleanup \
-	tekton authz-rego argocd
+	tekton authz-rego authz-acl argocd
 all: infra listeners
 
 bin:
@@ -13,7 +13,7 @@ infra: gke-cicd external-dns tekton argocd
 argocd:
 	./argocd-server.sh
 
-listeners: authz-rego
+apps: authz-rego authz-acl
 
 kustomize:
 	curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
@@ -37,6 +37,8 @@ tekton:
 	./tekton.sh
 authz-rego: tekton
 	./authz-rego.sh
+authz-acl:
+	./authz-acl.sh
 gke-cicd-cleanup:
 	./gke-cicd-cleanup.sh
 external-dns-cleanup:
