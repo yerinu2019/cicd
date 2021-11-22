@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  namespace: argocd
+resources:
+  - argocd.yaml
+commonAnnotations:
+  external-dns.alpha.kubernetes.io/hostname: argocd.svc.yerinu.com.
+patchesJson6902:
+  - target:
+      version: v1
+      kind: Service
+      namespace: argocd
+      name: argocd-server
+    patch: |-
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer
