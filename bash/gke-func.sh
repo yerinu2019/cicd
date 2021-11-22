@@ -60,11 +60,12 @@ function switch-gke() {
   gcloud container clusters get-credentials $1
 }
 
-function current-cluster() {
+function current-gke-cluster() {
   IFS='_' read -ra ARR <<< `kubectl config current-context`
   for i in "${ARR[@]}"; do
     echo "$i"
   done
+  return "${ARR[3]}"
 }
 
 function set-myself-admin() {
