@@ -34,4 +34,4 @@ external-dns-cleanup:
 	./external-dns-cleanup.sh
 external-dns-verify-cleanup:
 	./external-dns-verify-cleanup.sh
-cleanup: external-dns-cleanup gke-cicd-cleanup
+cleanup: gke-cicd-cleanup
