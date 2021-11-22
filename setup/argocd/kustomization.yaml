@@ -4,6 +4,8 @@ metadata:
   namespace: argocd
 commonAnnotations:
   external-dns.alpha.kubernetes.io/hostname: argocd.svc.yerinu.com.
+resources:
+  - namespace.yaml
 patchesJson6902:
   - target:
       version: v1
