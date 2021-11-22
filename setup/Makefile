@@ -1,12 +1,15 @@
 .PHONY: all bin tools infra kubectl kustomize opa helm tkn argocd-cli gke-cicd external-dns external-dns-verify \
 	cleanup gke-cicd-cleanup external-dns-cleanup external-dns-verify-cleanup \
-	tekton authz-rego authz-acl argocd argocd-first-password
+	tekton authz-rego authz-acl argocd argocd-first-password istioctl
 all: infra listeners
 
 bin:
 	./setupbin.sh
 
-tools: bin kustomize opa helm tkn argocd-cli kubectl
+tools: bin kustomize opa helm tkn argocd-cli kubectl istioctl
+
+istioctl:
+	./istioctl.sh
 
 infra: gke-cicd external-dns tekton argocd
 
