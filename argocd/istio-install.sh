@@ -1,7 +1,7 @@
 #!/bin/bash
 ./create-cluster.sh
 
-kubectl config use-context gke_monorepotest-323514_us-west1-a_cicd
+kubectl config use-context gke_monorepotest-323514_us-central1-a_cicd
 kubectl apply -k bootstrap/argocd-istio-bootstrap
 
 echo "Expose argocd api server"

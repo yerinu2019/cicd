@@ -79,7 +79,7 @@ function create-istio-gke() {
   MY_REGION=${3:-"us-central1"}                         # default region if not set
 
   create-gke $MY_CLUSTER_NAME $MY_ZONE $MY_REGION
-  current-gke_cluster
+  current-gke-cluster
   CURRENT_CLUSTER=$__
 
   SWITCHED=false

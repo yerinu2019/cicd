@@ -27,7 +27,7 @@ curl -sSL -o $HOME/bin/argocd https://github.com/argoproj/argo-cd/releases/lates
 
 echo "Create GKE cicd"
 source ../bash/gke-func.sh
-create-gke "monorepotest-323514" "us-west1-a" "us-west1" "cicd"
+create-gke "monorepotest-323514" "us-central1-a" "us-central1" "cicd"
 
 echo "Install external DNS"
 helm repo add bitnami https://charts.bitnami.com/bitnami
