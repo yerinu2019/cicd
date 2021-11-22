@@ -48,6 +48,7 @@ spec:
               metadata:
                 generateName: authz-rego-
               spec:
+                serviceAccountName: cicd-sa
                 taskSpec:
                   inputs:
                     resources:
