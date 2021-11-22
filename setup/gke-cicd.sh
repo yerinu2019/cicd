@@ -15,3 +15,7 @@ export K8S_SERVICE_ACCOUNT="cicd-sa"
 create-gcp-service-account $GCP_SERVICE_ACCOUNT
 bind-role $GCP_SERVICE_ACCOUNT "roles/storage.objectAdmin"
 use-workload-identity $GCP_SERVICE_ACCOUNT $K8S_NAMESPACE $K8S_SERVICE_ACCOUNT
+
+create-gcp-service-account "external-dns"
+bind-role "external-dns" "roles/editor"
+use-workload-identity "external-dns" "default" "external-dns"
