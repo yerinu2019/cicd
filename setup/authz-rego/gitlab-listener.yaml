@@ -13,7 +13,7 @@ metadata:
   annotations:
     external-dns.alpha.kubernetes.io/hostname: authz-rego.svc.yerinu.com.
 spec:
-  serviceAccountName: tekton-triggers-example-sa
+  serviceAccountName: cicd-sa
   resources:
     kubernetesResource:
       serviceType: LoadBalancer
