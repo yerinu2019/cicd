@@ -11,7 +11,6 @@ patchesJson6902:
   - target:
       version: v1
       kind: Service
-      namespace: argocd
       name: argocd-server
     patch: |-
       - op: replace
