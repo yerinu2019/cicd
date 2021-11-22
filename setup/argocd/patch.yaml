@@ -1,2 +1,5 @@
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: tekton.svc.yerinu.com.
 spec:
   type: LoadBalancer
