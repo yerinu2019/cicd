@@ -60,6 +60,15 @@ function switch-gke() {
   gcloud container clusters get-credentials $1
 }
 
+function current-cluster() {
+  CONTEXT = `kubectl config current-context`
+  IFS='_' read -ra ARR <<< "$CONTEXT"
+  for i in "${ARR[@]}"; do
+    echo "$i"
+  done
+  return ARR[2]
+}
+
 function set-myself-admin() {
   MY_CLUSTER_NAME=${1:-"test-cluster"}                  # gke cluster name
   gcloud container clusters get-credentials $MY_CLUSTER_NAME
