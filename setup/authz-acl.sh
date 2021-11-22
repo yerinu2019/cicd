@@ -1,2 +1,2 @@
 #!/bin/bash
-kubectl apply -k authz-acl/base
+kubectl apply -k ./authz-acl
