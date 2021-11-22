@@ -65,7 +65,7 @@ function current-gke-cluster() {
   for i in "${ARR[@]}"; do
     echo "$i"
   done
-  return "${ARR[3]}"
+  return ${ARR[3]}
 }
 
 function set-myself-admin() {
