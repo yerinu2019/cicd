@@ -46,7 +46,7 @@ spec:
             - apiVersion: tekton.dev/v1alpha1
               kind: TaskRun
               metadata:
-                generateName: gitlab-run-
+                generateName: authz-rego-
               spec:
                 taskSpec:
                   inputs:
