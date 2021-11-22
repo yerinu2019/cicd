@@ -62,9 +62,8 @@ function switch-gke() {
 
 function current-gke-cluster() {
   IFS='_' read -ra ARR <<< `kubectl config current-context`
-  CLUSTER = ${ARR[3]}
-  echo "${CLUSTER}"
-  return CLUSTER
+  __=${ARR[3]}
+  echo $__
 }
 
 function set-myself-admin() {
