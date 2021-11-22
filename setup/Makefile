@@ -11,10 +11,11 @@ tools: bin kustomize opa helm tkn argocd-cli kubectl istioctl
 istioctl:
 	./istioctl.sh
 
-infra: gke-cicd gke-cluster1 external-dns tekton argocd
+infra: gke-cicd external-dns tekton argocd gke-cluster-1
 
 argocd:
 	./argocd-server.sh
+
 argocd-first-password:
 	./argocd/first-password.sh
 
