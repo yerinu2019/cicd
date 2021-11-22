@@ -1,7 +1,12 @@
 #!/bin/bash
+CLUSTER_NAME="cicd"
 echo "Create GKE cicd"
 source ../bash/gke-func.sh
-create-gke "cicd"
+create-gke $CLUSTER_NAME
+
+gcloud container clusters update $CLUSTER_NAME \
+    --update-addons ConfigConnector=ENABLED
+
 kubectl apply -f gcp-service-account.yaml
 
 GCP_PROJECT_ID=`gcloud config get-value project`
