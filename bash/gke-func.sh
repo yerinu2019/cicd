@@ -17,8 +17,6 @@ function create-gke() {
   MY_REGION=${3:-"us-central1"}                         # default region if not set
   MY_PROJECT=${4:-"$(gcloud config get-value project)"} # default project if not set
 
-
-
   gcloud config set project $MY_PROJECT
   gcloud config set compute/zone $MY_ZONE
   gcloud config set compute/region $MY_REGION
@@ -52,6 +50,14 @@ function delete-gke() {
   else
     gcloud container clusters delete $MY_CLUSTER_NAME --zone $MY_ZONE -q
   fi
+}
+
+function switch-gke() {
+  if [ "$#" -ne 1 ]; then
+      echo "Usage: switch-gke <gke cluster name>"
+      exit -1
+  fi
+  gcloud container clusters get-credentials $1
 }
 
 function set-myself-admin() {
