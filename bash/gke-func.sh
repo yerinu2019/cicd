@@ -53,11 +53,12 @@ function delete-gke() {
 }
 
 function switch-gke() {
-  if [ "$#" -ne 1 ]; then
-      echo "Usage: switch-gke <gke cluster name>"
+  if [ "$#" -lt 1 ]; then
+      echo "Usage: switch-gke <gke cluster name> [<zone>]"
       exit -1
   fi
-  gcloud container clusters get-credentials $1
+  MY_ZONE=${2:-"us-central1-a"}                         # default zone if not set
+  gcloud container clusters get-credentials $1 --zone $MY_ZONE -q
 }
 
 function current-gke-cluster() {

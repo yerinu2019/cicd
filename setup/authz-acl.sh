@@ -1,5 +1,5 @@
 #!/bin/bash
 source ../bash/gke-func.sh
 
-switch-gke "cluster1"
+switch-gke "cicd"
 kubectl apply -k ./authz-acl
