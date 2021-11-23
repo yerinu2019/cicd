@@ -5,3 +5,5 @@ bases:
   - github.com/argoproj/argo-events/manifests/cluster-install
 resources:
   - namespace.yaml
+  - clusterrole.yaml
+  - argo-event-handler.yaml
