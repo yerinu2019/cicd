@@ -45,10 +45,14 @@ tkn: bin
 argocd-cli: bin
 	./argocd-cli.sh
 gke-cicd:
-	./gke-cicd.sh
+	./gke-create.sh cicd
+gke-cicd-cleanup:
+	./gke-delete.sh cicd
 
 gke-cluster-1:
-	./gke-cluster-1.sh
+	./gke-create.sh cluster1 istio
+gke-cluster1-cleanup:
+	./gke-delete.sh cluster1
 
 external-dns: 
 	./external-dns.sh
@@ -62,10 +66,6 @@ authz-acl:
 	./authz-acl.sh
 authz-opa:
 	./authz-opa.sh
-gke-cicd-cleanup:
-	./gke-cicd-cleanup.sh
-gke-cluster1-cleanup:
-	./gke-cluster1-cleanup.sh
 external-dns-cleanup:
 	./external-dns-cleanup.sh
 external-dns-verify-cleanup:
