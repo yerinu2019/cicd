@@ -50,7 +50,7 @@ gke-cicd:
 gke-cluster-1:
 	./gke-cluster-1.sh
 
-external-dns: gke-cicd
+external-dns: 
 	./external-dns.sh
 external-dns-verify: external-dns
 	./external-dns-verify.sh
