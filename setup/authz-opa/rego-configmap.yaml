@@ -1,0 +1,28 @@
+############################################################
+# Example configuration to bootstrap OPA-Istio sidecars.
+############################################################
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rego-config
+data:
+  config.yaml: |
+    services:
+      - name: gcs
+        url: https://storage.googleapis.com/test-opa-policy-bundles
+        credentials:
+          gcp_metadata:
+            scopes:
+              - https://www.googleapis.com/auth/devstorage.read_only
+    bundles:
+      istio/authz:
+        service: gcs
+        # NOTE ?alt=media is required
+        resource: authz-bundle.tar.gz?alt=media'
+        persist: true
+    plugins:
+      envoy_ext_authz_grpc:
+        addr: :9191
+        path: istio/authz/allow
+    decision_logs:
+      console: true

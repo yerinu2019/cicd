@@ -1,0 +1,61 @@
+# graphqlpolicy monitor role
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: graphql-policy-monitor
+rules:
+  - apiGroups: ["example.com"]
+    resources: ["graphqlpolicies"]
+    verbs: ["get", "list", "watch"]
+---
+# bind graphql-policy-monitor cluster role to api-istio service accounts
+# create this cluster role binding per each app namespace
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: api-istio-policy-reader
+roleRef:
+  kind: ClusterRole
+  name: graphql-policy-monitor
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: Group
+    name: system:serviceaccounts:api-istio
+    apiGroup: rbac.authorization.k8s.io
+---
+# create this cluster role binding per app namespace
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: api-istio-resource-monitor
+roleRef:
+  kind: ClusterRole
+  name: view    # can monitor all k8s resources
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: Group
+    name: system:serviceaccounts:api-istio
+    apiGroup: rbac.authorization.k8s.io
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: configmap-modifier
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["update", "patch"]
+---
+# create this role binding per app namespace
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: api-istio-configmap-modifier
+roleRef:
+  kind: Role
+  name: configmap-modifier
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: Group
+    name: system:serviceaccounts:api-istio
+    apiGroup: rbac.authorization.k8s.io
