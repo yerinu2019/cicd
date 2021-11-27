@@ -5,3 +5,4 @@ metadata:
   labels:
     opa-istio-injection="enabled"
     istio-injection=enabled
+    authz-opa-istio-injection="enabled"
