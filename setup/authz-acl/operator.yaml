@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: authz-operator
+  namespace: api-istio
+spec:
+  containers:
+    - name: authz-operator
+      image: yerinu2019/authz-operator:latest
+      imagePullPolicy: Always
