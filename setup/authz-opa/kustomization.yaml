@@ -4,7 +4,6 @@ metadata:
   namespace: api-istio
 resources:
   - opa-envoy-filter.yaml
-  - opa-rbac.yaml
   - opa-istio.yaml
   - gcs-egress.yaml
   - rego-configmap.yaml
