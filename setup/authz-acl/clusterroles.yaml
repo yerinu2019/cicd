@@ -7,5 +7,5 @@ rules:
     resources: ["clusterroles", "roles", "clusterrolebindings", "rolebindings"]
     verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
   - apiGroups: [ "v1" ]
-    resources: [ "namespace" ]
+    resources: [ "namespaces" ]
     verbs: [ "get", "list", "watch" ]
