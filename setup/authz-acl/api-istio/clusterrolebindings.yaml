@@ -11,4 +11,8 @@ subjects:
   - kind: Group
     name: system:serviceaccounts:api-istio
     apiGroup: rbac.authorization.k8s.io
+  - kind: ServiceAccount
+    name: default
+    namespace: api-istio
+    apiGroup: v1
 ---
