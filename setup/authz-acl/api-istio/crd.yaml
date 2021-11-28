@@ -3,6 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   # name must match the spec fields below, and be in the form: <plural>.<group>
   name: graphqlpolicies.example.com
+  namespace: api-istio
 spec:
   # group name to use for REST API: /apis/<group>/<version>
   group: example.com

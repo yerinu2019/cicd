@@ -2,6 +2,7 @@ apiVersion: "example.com/v1alpha1"
 kind: GraphqlPolicy
 metadata:
   name: api2
+  namespace: api-istio
   labels:
     api-id: api2
 spec:

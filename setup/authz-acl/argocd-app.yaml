@@ -3,13 +3,12 @@ kind: Application
 metadata:
   name: authz
   finalizers:
-
 spec:
   project: default
   source:
-    repoURL: https://github.com/yerinu2019/authz.git
+    repoURL: https://github.com/yerinu2019/cicd.git
     targetRevision: HEAD
-    path: simulation/single-cluster/minikube/policy/crd
+    path: setup/authz-acl
     directory:
       recurse: true
   destination:
