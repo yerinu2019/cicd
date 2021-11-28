@@ -3,6 +3,8 @@ kind: ClusterRoleBinding
 metadata:
   name: authz-operator-api-istio
   metadata:
+    annotations:
+      argocd.argoproj.io/sync-wave: "2"
 roleRef:
   kind: ClusterRole
   name: authz-operator

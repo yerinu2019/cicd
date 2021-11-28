@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: authz-operator
   namespace: api-istio
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
 spec:
   selector:
     matchLabels:

@@ -2,6 +2,8 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: authz-operator
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 rules:
   - apiGroups: ["rbac.authorization.k8s.io/v1"]
     resources: ["clusterroles", "roles", "clusterrolebindings", "rolebindings"]
