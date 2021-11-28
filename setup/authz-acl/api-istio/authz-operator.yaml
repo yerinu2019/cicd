@@ -19,3 +19,5 @@ spec:
         - name: authz-operator
           image: yerinu2019/authz-operator:latest
           imagePullPolicy: Always
+          args:
+            - "--log-level=debug"
