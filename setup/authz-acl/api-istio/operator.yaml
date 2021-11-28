@@ -1,20 +1,19 @@
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: authz-operator
   namespace: api-istio
-  labels:
-    app: authz-operator
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: authz-operator
+  replicas: 1
   template:
     metadata:
       labels:
         app: authz-operator
-    containers:
-      - name: authz-operator
-        image: yerinu2019/authz-operator:latest
-        imagePullPolicy: Always
+    spec:
+      containers:
+        - name: authz-operator
+          image: yerinu2019/authz-operator:latest
+          imagePullPolicy: Always
