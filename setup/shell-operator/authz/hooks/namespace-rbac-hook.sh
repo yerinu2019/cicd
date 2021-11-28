@@ -38,10 +38,7 @@ kubernetes:
       kind: ClusterRoleBinding
       labelSelector:
         matchLabels:
-          ?
-            ? "${LABEL}"
-            : enabled
-          : ~
+          "${LABEL}": "enabled"
       name: cluster-roles
     -
       apiVersion: v1
@@ -54,8 +51,7 @@ kubernetes:
       kind: RoleBinding
       labelSelector:
         matchLabels:
-          ? "${LABEL}"
-          : enabled
+          "${LABEL}": enabled
       name: roles
 EOF
 }
