@@ -15,7 +15,7 @@ spec:
   destination:
     namespace: api-istio
     # Uncomment name to deploy api-istio namespace resources to cluster1
-    #name: gke_monorepotest-323514_us-central1-a_cluster1
+    name: gke_monorepotest-323514_us-central1-a_cluster1
     #server: https://kubernetes.default.svc
   syncPolicy:
     automated:
