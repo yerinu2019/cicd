@@ -12,42 +12,51 @@ function __config__() {
   cat <<EOF
 configVersion: v1
 kubernetes:
-- name: namespaces
-  group: main
-  apiVersion: v1
-  kind: Namespace
-  jqFilter: |
-    {
-      namespace: .metadata.name,
-      hasLabel: (
-       .metadata.labels // {} |
-         contains({"${LABEL}": "enabled"})
-      )
-    }
-  keepFullObjectsInMemory: false
-- name: cluster-roles
-  apiVersion: v1
-  kind: ClusterRoleBinding
-  labelSelector:
-    matchLabels:
-      ${LABEL}: "enabled"
-  jqFilter: |
-    {
-      "name": .metadata.name,
-    }
-  keepFullObjectsInMemory: false
-- name: roles
-  apiVersion: v1
-  kind: RoleBinding
-  labelSelector:
-    matchLabels:
-      ${LABEL}: "enabled"
- jqFilter: |
-   {
-     "namespace": .metadata.namespace,
-     "name": .metadata.name,
-   }
-  keepFullObjectsInMemory: false
+  configVersion: v1
+  kubernetes:
+    -
+      apiVersion: v1
+      group: main
+      jqFilter: |
+          {
+            namespace: .metadata.name,
+            hasLabel: (
+             .metadata.labels // {} |
+               contains({"${LABEL}": "enabled"})
+            )
+          }
+      keepFullObjectsInMemory: false
+      kind: Namespace
+      name: namespaces
+    -
+      apiVersion: v1
+      jqFilter: |
+          {
+            "name": .metadata.name,
+          }
+      keepFullObjectsInMemory: false
+      kind: ClusterRoleBinding
+      labelSelector:
+        matchLabels:
+          ?
+            ? "${LABEL}"
+            : enabled
+          : ~
+      name: cluster-roles
+    -
+      apiVersion: v1
+      jqFilter: |
+          {
+            "namespace": .metadata.namespace,
+            "name": .metadata.name,
+          }
+      keepFullObjectsInMemory: false
+      kind: RoleBinding
+      labelSelector:
+        matchLabels:
+          ? "${LABEL}"
+          : enabled
+      name: roles
 EOF
 }
 
