@@ -3,9 +3,17 @@ kind: Deployment
 metadata:
   name: authz-operator
   namespace: api-istio
+  labels:
+    app: authz-operator
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: authz-operator
   template:
+    metadata:
+      labels:
+        app: authz-operator
     containers:
       - name: authz-operator
         image: yerinu2019/authz-operator:latest
