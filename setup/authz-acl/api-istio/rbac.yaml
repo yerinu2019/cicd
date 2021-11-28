@@ -9,5 +9,5 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: ServiceAccount
-    name: system:serviceaccount:api-istio:default
+    name: api-istio:default
     apiGroup: rbac.authorization.k8s.io
