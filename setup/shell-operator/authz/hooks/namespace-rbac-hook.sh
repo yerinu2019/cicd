@@ -34,7 +34,6 @@ kubernetes:
       ${LABEL}: "enabled"
   jqFilter: |
     {
-      "namespace": .metadata.namespace,
       "name": .metadata.name,
     }
   keepFullObjectsInMemory: false
@@ -128,11 +127,8 @@ EOF
 function disable_rbac() {
   ns_name=$1
   for i in $(seq 0 "$(context::jq -r '(.snapshots.cluster-roles | length) - 1')"); do
-    namespace="$(context.jq -r '.snapshots.cluster-roles['"$i"'].filterResult.namespace')"
-    if [ $namespace -eq $ns_name ]; then
-      name="$(context.jq -r '.snapshots.cluster-roles['"$i"'].filterResult.name')"
-      kubectl -n ${namespace} delete clusterrolebinding ${name}
-    fi
+    name="$(context.jq -r '.snapshots.cluster-roles['"$i"'].filterResult.name')"
+    kubectl -n ${ns_name} delete clusterrolebinding ${name}
   done
 
   for i in $(seq 0 "$(context::jq -r '(.snapshots.cluster-roles | length) - 1')"); do
