@@ -7,8 +7,9 @@ LABEL="authz-opa-istio-injection"
 POLICY_MONITOR_NAME="graphql-policy-monitor"
 OPA_VIEWER_NAME="opa-viewer"
 CONFIGMAP_MODIFIER_NAME="opa-configmap-modifier"
+
 function __config__() {
-  cat << EOF
+  cat <<EOF
 configVersion: v1
 kubernetes:
 - name: namespaces
@@ -54,7 +55,7 @@ EOF
 
 function enable_rbac() {
   ns_name=$1
-  cat << EOF
+  cat <<EOF  | kubectl apply -f -
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -121,7 +122,7 @@ subjects:
   - kind: Group
     name: system:serviceaccounts:${ns_name}
     apiGroup: rbac.authorization.k8s.io
-EOF | kubectl apply -f -
+EOF
 }
 
 function disable_rbac() {
@@ -153,4 +154,5 @@ function __main__() {
     fi
   done
 }
+
 hook::run "$@"
