@@ -24,7 +24,6 @@ kubernetes:
          contains({"${LABEL}": "enabled"})
       )
     }
-  group: main
   keepFullObjectsInMemory: false
 - name: cluster-roles
   apiVersion: v1
