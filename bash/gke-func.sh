@@ -53,7 +53,7 @@ function delete-gke() {
 }
 
 function switch-gke() {
-  if [ "$#" -lt 1 ]; then
+  if [[ "$#" -lt 1 ]]; then
       echo "Usage: switch-gke <gke cluster name> [<zone>]"
       exit -1
   fi
@@ -63,7 +63,7 @@ function switch-gke() {
 
 function current-gke-cluster() {
   IFS='_' read -ra ARR <<< `kubectl config current-context`
-  if [ ${ARR[0]} -eq "gke"]; then
+  if [[ ${ARR[0]} -eq "gke" ]]; then
     __=${ARR[3]}
   else
     __=""
@@ -78,7 +78,7 @@ function set-myself-admin() {
 }
 
 function create-gcp-service-account() {
-  if [ "$#" -ne 1 ]; then
+  if [[ "$#" -ne 1 ]]; then
       echo "Usage: create-gcp-service-account <gcp service account>"
       exit -1
   fi
@@ -92,7 +92,7 @@ function create-gcp-service-account() {
 }
 
 function bind-role() {
-  if [ "$#" -ne 2 ]; then
+  if [[ "$#" -ne 2 ]]; then
       echo "Usage: bind-role <gcp service account> <role>"
       exit -1
   fi
@@ -105,7 +105,7 @@ function bind-role() {
 }
 
 function use-workload-identity() {
-  if [ "$#" -ne 3 ]; then
+  if [[ "$#" -ne 3 ]]; then
       echo "Usage: use-workload-identity <gcp service account> <k8s namespace> <k8s service account>"
       exit -1
   fi

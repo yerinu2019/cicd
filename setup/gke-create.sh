@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ "$#" < 1 ]; then
+if [[ "$#" -lt 1 ]]; then
     echo "Usage: gke-create.sh <cluster-name> [istio <zone> <region> <gcp-project>]"
     exit -1
 fi
@@ -17,14 +17,14 @@ current-gke-cluster
 CURRENT_CLUSTER=$__
 
 SWITCHED=false
-if [ $CURRENT_CLUSTER -ne $MY_CLUSTER_NAME ]; then
+if [[ $CURRENT_CLUSTER -ne $MY_CLUSTER_NAME ]]; then
   switch-gke $MY_CLUSTER_NAME
   SWITCHED=true
 else
   gcloud container clusters get-credentials $MY_CLUSTER_NAME --zone $MY_ZONE -q
 fi
 
-if [ $ISTIO -eq "istio" ]; then
+if [[ $ISTIO -eq "istio" ]]; then
   istioctl install --set profile=demo -y
 fi
 
@@ -47,6 +47,6 @@ use-workload-identity $GCP_SERVICE_ACCOUNT $K8S_NAMESPACE $K8S_SERVICE_ACCOUNT
 # install argo events to all gke cluster
 ./argo-events.sh
 
-if [ "$SWITCHED" = true ]; then
+if [[ "$SWITCHED" = true ]]; then
   switch-gke $CURRENT_CLUSTER
 fi
