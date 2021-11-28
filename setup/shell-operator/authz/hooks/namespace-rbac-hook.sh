@@ -27,7 +27,7 @@ kubernetes:
     kind: Namespace
     name: namespaces
   -
-    apiVersion: v1
+    apiVersion: rbac.authorization.k8s.io/v1
     jqFilter: |
         {
           "name": .metadata.name,
@@ -39,7 +39,7 @@ kubernetes:
         "${LABEL}": "enabled"
     name: cluster-roles
   -
-    apiVersion: v1
+    apiVersion: rbac.authorization.k8s.io/v1
     jqFilter: |
         {
           "namespace": .metadata.namespace,
