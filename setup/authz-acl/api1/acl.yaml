@@ -1,0 +1,13 @@
+apiVersion: "example.com/v1alpha1"
+kind: GraphqlPolicy
+metadata:
+  name: api1
+  namespace: api-istio
+  labels:
+    api-id: api1
+spec:
+  acls:
+    - kind: API
+      whitelist:
+        - spiffe://cluster.local/ns/clientns/sa/client1
+        - spiffe://cluster.local/ns/clientns/sa/client3

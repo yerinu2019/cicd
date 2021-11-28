@@ -1,0 +1,67 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  # name must match the spec fields below, and be in the form: <plural>.<group>
+  name: graphqlpolicies.example.com
+spec:
+  # group name to use for REST API: /apis/<group>/<version>
+  group: example.com
+  # list of versions supported by this CustomResourceDefinition
+  versions:
+    - name: v1alpha1
+      # Each version can be enabled/disabled by Served flag.
+      served: true
+      # One and only one version must be marked as the storage version.
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                acls:
+                  description: List of ACLs supported by this Data API.
+                    Should have exactly one API ACL.
+                    Can have zero or more QUERY ACLs or Mutate ACLs or Field Group ACLs.
+                    Total one(API ACL) or more ACLs per AccessPolicy
+                  type: array
+                  items:
+                    type: object
+                    description: A single Data API access control policy.
+                    properties:
+                      kind:
+                        description: Specifies ACL type.
+                          Valid values are API, MUTATE_FIELDS
+                        enum:
+                          - API
+                          - MUTATE_FIELDS
+                        type: string
+                      fields:
+                        description: Field names when kind if FIELD_GROUP.
+                          Should have at least one field when kind is FIELD_GROUP.
+                          Ignored when kind is not FIELD_GROUP.
+                        type: array
+                        items:
+                          type: string
+                      whitelist:
+                        description: List of service accounts that can access the
+                          resource of this ACL. Entry should match with API request
+                          client principal; certificate or access token attribute.
+                          whitelist members are supposed to be added by future API client
+                          teams and should be approved by the API owner team.
+                        type: array
+                        items:
+                          type: string
+  # either Namespaced or Cluster
+  scope: Namespaced
+  names:
+    # plural name to be used in the URL: /apis/<group>/<version>/<plural>
+    plural: graphqlpolicies
+    # singular name to be used as an alias on the CLI and for display
+    singular: graphqlpolicy
+    # kind is normally the CamelCased singular type. Your resource manifests use this.
+    kind: GraphqlPolicy
+    # shortNames allow shorter string to match your resource on the CLI
+    shortNames:
+      - ap

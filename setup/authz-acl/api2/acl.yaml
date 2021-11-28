@@ -1,0 +1,31 @@
+apiVersion: "example.com/v1alpha1"
+kind: GraphqlPolicy
+metadata:
+  name: api2
+  labels:
+    api-id: api2
+spec:
+  acls:
+    - kind: API
+      whitelist:
+        - spiffe://cluster.local/ns/clientns/sa/client2
+        - spiffe://cluster.local/ns/clientns/sa/client3
+        - spiffe://cluster.local/ns/clientns/sa/client4
+    - kind: MUTATE_FIELDS
+      fields:
+        - field1
+        - field2
+      whitelist:
+        - spiffe://cluster.local/ns/clientns/sa/client3
+    - kind: MUTATE_FIELDS
+      fields:
+        - field2
+        - field3
+      whitelist:
+        - spiffe://cluster.local/ns/clientns/sa/client4
+    - kind: MUTATE_FIELDS
+      fields:
+        - field3
+        - field4
+      whitelist:
+        - spiffe://cluster.local/ns/clientns/sa/client2
