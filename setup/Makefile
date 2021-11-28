@@ -17,7 +17,7 @@ infra: gke-cicd external-dns argocd gke-cluster-1
 authz: gke-cicd external-dns argocd authz-operator authz-acl
 
 authz-operator:
-	./shell-operator/authz/make.sh
+	./authz-operator.sh
 authz-rego: tekton
 	./authz-rego.sh
 authz-acl:
