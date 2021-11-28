@@ -11,7 +11,7 @@ MY_ZONE=${3:-"us-central1-a"}                         # default zone if not set
 MY_REGION=${4:-"us-central1"}                         # default region if not set
 MY_PROJECT=${5:-"$(gcloud config get-value project)"} # default project if not set
 
-create-gke $CLUSTER_NAME
+create-gke $MY_CLUSTER_NAME
 
 current-gke-cluster
 CURRENT_CLUSTER=$__
