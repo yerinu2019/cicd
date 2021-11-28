@@ -145,7 +145,7 @@ function disable_rbac() {
 function __main__() {
   for i in $(seq 0 "$(context::jq -r '(.snapshots.namespaces | length) - 1')"); do
     echo "check ns_name"
-    ns_name="$(context.jq -r '.snapshots.namespaces['"$i"'].filterResult.name')"
+    ns_name="$(context::jq -r '.snapshots.namespaces['"$i"'].filterResult.name')"
     echo "ns_name: ${ns_name}"
     if context::jq -e '.snapshots.namespaces['"$i"'].filterResult.hasLabel' ; then
       enable_rbac "$ns_name"
