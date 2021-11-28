@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/yerinu2019/cicd.git
     targetRevision: HEAD
-    path: setup/authz-acl
+    path: setup/authz-acl/api-istio
     directory:
       recurse: true
   destination:
