@@ -15,7 +15,7 @@ operator-sdk:
 istioctl:
 	./istioctl.sh
 
-infra: gke-cicd external-dns tekton argocd argo-events argo-workflow gke-cluster-1
+infra: gke-cicd external-dns argocd gke-cluster-1
 
 argo-events:
 	./argo-events.sh
