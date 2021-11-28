@@ -28,67 +28,78 @@ spec:
               value:
                 - "Push Hook"
       bindings:
-        - name: gitrevision
-          value: $(body.checkout_sha)
-        - name: gitrepositoryurl
-          value: $(body.repository.git_http_url)
+        - ref: gitlab-pr-binding
       template:
-        spec:
-          params:
-            - name: gitrevision
-            - name: gitrepositoryurl
-          resourcetemplates:
-            - apiVersion: tekton.dev/v1alpha1
-              kind: TaskRun
-              metadata:
-                generateName: gitlab-run-
-              spec:
-                taskSpec:
-                  inputs:
-                    resources:
-                      - name: source
-                        type: git
-                  volumes:
-                    - name: kaniko-secret
-                      secret:
-                        secretName: dockerhub-credential
-                        items:
-                          - key: .dockerconfigjson
-                            path: config.json
-                  steps:
-                    - name: build-source
-                      image: yerinu2019/go-make-1.17
-                      script: |
-                        #!/usr/bin/env bash
-                        set -xe
-                        cd $(inputs.resources.source.path)
-                        pwd
-                        ls -al
-                        echo "building source"
-                        make build-tekton
-                        echo "after build"
-                        ls -al
-                    - name: build-image
-                      image: gcr.io/kaniko-project/executor:debug
-                      env:
-                        - name: "DOCKER_CONFIG"
-                          value: "/kaniko/.docker/"
-                      command:
-                        - /kaniko/executor
-                        - --dockerfile=.Dockerfile_amd64
-                        - --destination=yerinu2019/opa-envoy-plugin:latest
-                        - --context=$(inputs.resources.source.path)
-                        - --verbosity=debug
-                      volumeMounts:
-                        - name: kaniko-secret
-                          mountPath: /kaniko/.docker/
-                inputs:
-                  resources:
-                    - name: source
-                      resourceSpec:
-                        type: git
-                        params:
-                          - name: revision
-                            value: $(tt.params.gitrevision)
-                          - name: url
-                            value: $(tt.params.gitrepositoryurl)
+        ref: gitlab-template
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerBinding
+metadata:
+  name: gitlab-pr-binding
+spec:
+  params:
+    - name: gitrevision
+      value: $(body.checkout_sha)
+    - name: gitrepositoryurl
+      value: $(body.repository.git_http_url)
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: gitlab-template
+spec:
+  params:
+    - name: gitrevision
+    - name: gitrepositoryurl
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1alpha1
+      kind: TaskRun
+      metadata:
+        generateName: gitlab-run-
+      spec:
+        taskSpec:
+          inputs:
+            resources:
+              - name: source
+                type: git
+          volumes:
+            - name: kaniko-secret
+              secret:
+                secretName: dockerhub-credential
+                items:
+                  - key: .dockerconfigjson
+                    path: config.json
+          steps:
+            - name: build-source
+              image: yerinu2019/go-make-1.17
+              script: |
+                #!/usr/bin/env bash
+                set -xe
+                cd $(inputs.resources.source.path)
+                if [[ -f preImageBuild.sh ]]; then
+                  ./preImageBuild.sh
+                fi
+            - name: build-image
+              image: gcr.io/kaniko-project/executor:debug
+              env:
+                - name: "DOCKER_CONFIG"
+                  value: "/kaniko/.docker/"
+              command:
+                - /kaniko/executor
+                - --dockerfile=.Dockerfile_amd64
+                - --destination=yerinu2019/opa-envoy-plugin:latest
+                - --context=$(inputs.resources.source.path)
+                - --verbosity=debug
+              volumeMounts:
+                - name: kaniko-secret
+                  mountPath: /kaniko/.docker/
+        inputs:
+          resources:
+            - name: source
+              resourceSpec:
+                type: git
+                params:
+                  - name: revision
+                    value: $(tt.params.gitrevision)
+                  - name: url
+                    value: $(tt.params.gitrepositoryurl)
