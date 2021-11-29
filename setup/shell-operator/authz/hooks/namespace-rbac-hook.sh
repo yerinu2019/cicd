@@ -147,10 +147,14 @@ function __main__() {
     echo "check ns_name"
     ns_name="$(context::jq -r '.snapshots.namespaces['"$i"'].filterResult.name')"
     echo "ns_name: ${ns_name}"
-    if context::jq -e '.snapshots.namespaces['"$i"'].filterResult.hasLabel' ; then
-      enable_rbac "$ns_name"
+    if [[ ns_name -eq "null" ]]; then
+      echo "skip null ns_name"
     else
-      disable_rbac "$ns_name"
+      if context::jq -e '.snapshots.namespaces['"$i"'].filterResult.hasLabel' ; then
+        enable_rbac "$ns_name"
+      else
+        disable_rbac "$ns_name"
+      fi
     fi
   done
 }
