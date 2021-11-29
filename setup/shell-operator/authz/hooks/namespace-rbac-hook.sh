@@ -56,7 +56,7 @@ EOF
 
 function enable_rbac() {
   ns_name=$1
-  cat <<EOF  | kubectl apply -f -
+  cat <<EOF  | tee | kubectl apply -f -
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
