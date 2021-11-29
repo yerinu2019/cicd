@@ -56,7 +56,8 @@ EOF
 
 function enable_rbac() {
   ns_name=$1
-  cat <<EOF  | tee | kubectl apply -f -
+  #yaml=$(cat <<EOF
+  cat <<EOF | kubectl apply -f -
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -71,7 +72,7 @@ kind: ClusterRoleBinding
 metadata:
   name: ${POLICY_MONITOR_NAME}-${ns_name}
   metadata:
-    labels"
+    labels:
       ${LABEL}: "enabled"
 roleRef:
   kind: ClusterRole
