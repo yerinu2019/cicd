@@ -1,10 +1,33 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: api-istio
+  name: authz-operator-admin
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: authz-operator-admin
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: authz-operator-admin   # authz-operator-admin has permission to grant clusterroles to service accounts
+    namespace: api-istio
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: authz-operator
   namespace: api-istio
   annotations:
-    argocd.argoproj.io/sync-wave: "10"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
   selector:
     matchLabels:
