@@ -147,7 +147,7 @@ function __main__() {
     echo "check ns_name"
     ns_name="$(context::jq -r '.snapshots.namespaces['"$i"'].filterResult.name')"
     echo "ns_name: ${ns_name}"
-    if [[ ns_name -eq "null" ]]; then
+    if [ -z ns_name ]; then
       echo "skip null ns_name"
     else
       if context::jq -e '.snapshots.namespaces['"$i"'].filterResult.hasLabel' ; then
