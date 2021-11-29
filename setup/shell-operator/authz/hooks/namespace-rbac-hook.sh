@@ -154,7 +154,7 @@ function __main__() {
       if context::jq -e '.snapshots.namespaces['"$i"'].filterResult.hasLabel' ; then
         enable_rbac "$ns_name"
       else
-        disable_rbac "$ns_name"
+        #disable_rbac "$ns_name"
       fi
     fi
   done
