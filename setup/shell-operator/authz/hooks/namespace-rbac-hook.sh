@@ -71,9 +71,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: ${POLICY_MONITOR_NAME}-${ns_name}
-  metadata:
-    labels:
-      ${LABEL}: "enabled"
+  labels:
+    ${LABEL}: "enabled"
 roleRef:
   kind: ClusterRole
   name: ${POLICY_MONITOR_NAME}
