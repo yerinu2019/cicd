@@ -144,8 +144,9 @@ function disable_rbac() {
 
 function __main__() {
   for i in $(seq 0 "$(context::jq -r '(.snapshots.namespaces | length) - 1')"); do
+    echo
     echo "check ns_name"
-    ns_name="$(context::jq -r '.snapshots.namespaces['"$i"'].filterResult.name')"
+    ns_name="$(context::jq -r '.snapshots.namespaces['"$i"'].filterResult.namespace')"
     echo "ns_name: ${ns_name}"
     if [[ -z ns_name || "$ns_name" == "null" ]]; then
       echo "skip null ns_name"
