@@ -21,3 +21,4 @@ spec:
           imagePullPolicy: Always
           args:
             - "--log-level=debug"
+        serviceAccountName: authz-operator-admin
