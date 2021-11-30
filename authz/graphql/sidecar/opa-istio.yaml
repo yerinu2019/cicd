@@ -165,9 +165,7 @@ data:
         #"--h2c",
         "--log-format=json-pretty",
         "--set=decision_logs.console=true",
-        "--diagnostic-addr=0.0.0.0:8282",
-        "/istio/authz/policy.rego",
-        "/system/log/mask.rego"
+        "--diagnostic-addr=0.0.0.0:8282"
       ],
       "volumeMounts": [{
         "mountPath": "/config",
