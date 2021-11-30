@@ -177,11 +177,6 @@ data:
         "mountPath": "/config",
         "name": "rego-config",
       }
-# Uncomment this when rego is loaded using config map
-#, {
-#        "mountPath": "/policy",
-#        "name": "opa-policy",
-#      }
       ],
       "readinessProbe": {
         "httpGet": {
@@ -201,11 +196,6 @@ data:
       "name": "rego-config",
       "configMap": {"name": "rego-config"},
     }
-# Uncomment this when rego is loaded in config map
-#    opa_policy_volume = {
-#      "name": "opa-policy",
-#      "configMap": {"name": "policy"},
-#    }
 ---
 ############################################################
 # Service to expose OPA admission controller (required by Kubernetes.)
