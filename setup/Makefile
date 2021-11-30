@@ -14,7 +14,7 @@ istioctl:
 
 infra: gke-cicd external-dns argocd gke-cluster-1
 
-authz: gke-cicd external-dns argocd gke-cluster-1 authz-namespace authz-operator authz-acl
+authz: gke-cicd external-dns argocd gke-cluster-1 authz-namespace authz-operator authz-opa authz-acl
 
 authz-namespace:
 	./authz-namespace.sh
