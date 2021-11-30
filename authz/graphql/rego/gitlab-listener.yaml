@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitlab-secret
+type: Opaque
+stringData:
+  secretToken: "1234567"
+---
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: authz-repo-gitlab-listener
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: authz-rego.svc.yerinu.com.
+spec:
+  serviceAccountName: cicd-sa
+  resources:
+    kubernetesResource:
+      serviceType: LoadBalancer
+  triggers:
+    - name: gitlab-push-events-trigger
+      interceptors:
+        - name: "verify-gitlab-payload"
+          ref:
+            name: "gitlab"
+            kind: ClusterInterceptor
+          params:
+            - name: secretRef
+              value:
+                secretName: "gitlab-secret"
+                secretKey: "secretToken"
+            - name: eventTypes
+              value:
+                - "Push Hook"
+      bindings:
+        - name: gitrevision
+          value: $(body.checkout_sha)
+        - name: gitrepositoryurl
+          value: $(body.repository.git_http_url)
+      template:
+        spec:
+          params:
+            - name: gitrevision
+            - name: gitrepositoryurl
+          resourcetemplates:
+            - apiVersion: tekton.dev/v1alpha1
+              kind: TaskRun
+              metadata:
+                generateName: authz-rego-
+              spec:
+                serviceAccountName: cicd-sa
+                taskSpec:
+                  inputs:
+                    resources:
+                      - name: source
+                        type: git
+                  volumes:
+                    - name: kaniko-secret
+                      secret:
+                        secretName: dockerhub-credential
+                        items:
+                          - key: .dockerconfigjson
+                            path: config.json
+                  steps:
+                    - name: build-source
+                      image: yerinu2019/opa-gsutil
+                      script: |
+                        #!/usr/bin/env bash
+                        set -xe
+                        cd $(inputs.resources.source.path)
+                        cd simulation/single-cluster/minikube/policy/rego
+                        pwd
+                        ls -al
+                        opa build -b -o authz-bundle.tar.gz .
+                        echo "upload"
+                        gsutil cp -p authz-bundle.tar.gz gs://test-opa-policy-bundles
+                inputs:
+                  resources:
+                    - name: source
+                      resourceSpec:
+                        type: git
+                        params:
+                          - name: revision
+                            value: $(tt.params.gitrevision)
+                          - name: url
+                            value: $(tt.params.gitrepositoryurl)
