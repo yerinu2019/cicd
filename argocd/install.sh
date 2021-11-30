@@ -12,7 +12,7 @@ echo "Install argocd cli"
 curl -sSL -o $HOME/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && chmod +x $HOME/bin/argocd
 
 echo "Expose argocd api server"
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 
 kubectl -n argocd get all
 

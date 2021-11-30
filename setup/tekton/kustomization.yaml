@@ -15,4 +15,4 @@ patchesJson6902:
     patch: |-
       - op: replace
         path: /spec/type
-        value: NodePort
+        value: LoadBalancer
