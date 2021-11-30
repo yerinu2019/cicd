@@ -16,7 +16,7 @@ spec:
   serviceAccountName: cicd-sa
   resources:
     kubernetesResource:
-      serviceType: LoadBalancer
+      serviceType: NodePort
   triggers:
     - name: gitlab-push-events-trigger
       interceptors:

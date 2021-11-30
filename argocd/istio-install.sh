@@ -5,7 +5,7 @@ kubectl config use-context gke_monorepotest-323514_us-central1-a_cicd
 kubectl apply -k bootstrap/argocd-istio-bootstrap
 
 echo "Expose argocd api server"
-kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "NodePort"}}'
 
 kubectl -n argocd get all
 
