@@ -170,8 +170,8 @@ data:
         "--log-format=json-pretty",
         "--set=decision_logs.console=true",
         "--diagnostic-addr=0.0.0.0:8282",
-        "/policy/policy.rego",
-        "/policy/mask.rego"
+        "/istio/authz/policy.rego",
+        "/system/log/mask.rego"
       ],
       "volumeMounts": [{
         "mountPath": "/config",
