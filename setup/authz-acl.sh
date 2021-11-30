@@ -6,11 +6,8 @@ switch-gke "cicd"
 #Uncomment argocd cluster when using cluster1
 argocd cluster add gke_monorepotest-323514_us-central1-a_cluster1 -y
 
-kubectl apply -f ./authz-acl/argocd-app.yaml
-argocd app wait authz
+kubectl apply -f /authz/graphql/argocd/authz-acl.yaml
+argocd app wait authz-acl
 
 switch-gke "cluster1"
-kubectl -n api-istio rollout restart deployment authz-operator
-kubectl -n api-istio rollout status deployment/authz-operator
-kubectl get clusterrolebindings | grep api-istio
-kubectl -n api-istio get rolebindings
+kubectl -n api-istio get graphpolicies
