@@ -36,6 +36,8 @@ function create-gke() {
   else
     echo "GKE $MY_CLUSTER_NAME exists."
   fi
+  gcloud container clusters update $MY_CLUSTER_NAME \
+      --update-addons ConfigConnector=ENABLED
 }
 
 function delete-gke() {
