@@ -131,6 +131,10 @@ data:
 
     patch = [{
       "op": "add",
+      "path": "/spec/initContainers/-",
+      "value": init_container,
+    }, {
+      "op": "add",
       "path": "/spec/containers/-",
       "value": opa_container,
     }, {
@@ -142,6 +146,17 @@ data:
       "path": "/spec/volumes/-",
       "value": rego_volume,
     }]
+
+    init_container = {
+        "image":  "gcr.io/google.com/cloudsdktool/cloud-sdk:326.0.0-alpine",
+        "name": "workload-identity-initcontainer",
+        "command": [
+          "/bin/bash",
+          "-c'",
+          "|
+            curl -s -H 'Metadata-Flavor: Google' 'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token' --retry 30 --retry-connrefused --retry-max-time 30 > /dev/null || exit 1"
+          ],
+    }
 
     kubemgmt_container = {
       "name": "kube-mgmt",
