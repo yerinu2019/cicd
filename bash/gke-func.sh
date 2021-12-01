@@ -30,6 +30,7 @@ function create-gke() {
           --num-nodes 1 \
           --scopes $MY_SCOPES \
           --workload-pool=$MY_PROJECT.svc.id.goog \
+          --enable-vertical-pod-autoscaling \
           $MY_CLUSTER_NAME
 
     set-myself-admin $MY_CLUSTER_NAME $MY_ZONE
