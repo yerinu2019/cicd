@@ -33,6 +33,7 @@ function create-gke() {
           --enable-vertical-pod-autoscaling \
           --enable-autoprovisioning \
           --max-memory 8 \
+          --max-cpu 2 \
           $MY_CLUSTER_NAME
 
     set-myself-admin $MY_CLUSTER_NAME $MY_ZONE
