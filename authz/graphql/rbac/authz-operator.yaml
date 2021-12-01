@@ -5,6 +5,8 @@ metadata:
   name: authz-operator-admin
   annotations:
     argocd.argoproj.io/sync-wave: "1"
+    # TODO: find a way to dynamically set GCP project id
+    iam.gke.io/gcp-service-account: "gcp-sa-creator@monorepotest-323514.iam.gserviceaccount.com"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
