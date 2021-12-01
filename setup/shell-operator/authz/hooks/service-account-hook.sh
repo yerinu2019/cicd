@@ -21,7 +21,7 @@ function __config__() {
       keepFullObjectsInMemory: false
       kind: ServiceAccount
       name: sa
-  EOF
+EOF
 }
 
 function bind_gcs_reader() {
