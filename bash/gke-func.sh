@@ -31,6 +31,8 @@ function create-gke() {
           --scopes $MY_SCOPES \
           --workload-pool=$MY_PROJECT.svc.id.goog \
           --enable-vertical-pod-autoscaling \
+          --enable-autoprovisioning \
+          --max-memory 8 \
           $MY_CLUSTER_NAME
 
     set-myself-admin $MY_CLUSTER_NAME $MY_ZONE
