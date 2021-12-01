@@ -91,7 +91,7 @@ function create-gcp-service-account() {
   GSA=$1
   CHECK=`gcloud iam service-accounts list | grep ${GSA}@`
   echo "Check Google Service Account Result for ${GSA}@: ${CHECK}"
-  if [[ -z "${GKE}" ]]; then
+  if [[ -z "${CHECK}" ]]; then
     gcloud iam service-accounts create $GSA
   else
     echo "GSA $GSA exists."
