@@ -44,8 +44,12 @@ create-gcp-service-account $GCP_SERVICE_ACCOUNT
 bind-role $GCP_SERVICE_ACCOUNT "roles/editor"
 use-workload-identity $GCP_SERVICE_ACCOUNT $K8S_NAMESPACE $K8S_SERVICE_ACCOUNT
 
+create-gcp-service-account "gcs-reader"
+bind-role "gcs-reader" "roles/storage.objectViewer"
+
+
 # install argo events to all gke cluster
-./argo-events.sh
+#./argo-events.sh
 
 if [[ "$SWITCHED" = true ]]; then
   switch-gke $CURRENT_CLUSTER
