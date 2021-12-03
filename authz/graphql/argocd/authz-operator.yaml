@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/yerinu2019/cicd.git
     targetRevision: HEAD
-    path: authz/graphql/rbac
+    path: authz/graphql/operator/overlays/gcp-monorepotest/api-istio
     directory:
       recurse: true
   destination:
