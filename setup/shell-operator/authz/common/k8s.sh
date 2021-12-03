@@ -1,5 +1,5 @@
 #!/bin/bash
-source source /common/gcp.sh
+source /common/gcp.sh
 
 k8s::service-account-filter() {
   if [[ "$#" -ne 1 ]]; then
