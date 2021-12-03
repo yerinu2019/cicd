@@ -2,7 +2,6 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: api1
-  namespace: api-istio
   labels:
     authz-opa-istio-injection: "enabled"
 ---
@@ -10,7 +9,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api1
-  namespace: api-istio
 spec:
   replicas: 1
   selector:
@@ -40,7 +38,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: api1
-  namespace: api-istio
   labels:
     app: api
     api: api1

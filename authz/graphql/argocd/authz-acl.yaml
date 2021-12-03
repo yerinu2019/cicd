@@ -1,24 +1,29 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: authz-acl
   namespace: argocd
-  finalizers:
 spec:
-  project: default
-  source:
-    repoURL: https://github.com/yerinu2019/cicd.git
-    targetRevision: HEAD
-    path: authz/graphql/acl
-    directory:
-      recurse: true
-  destination:
-    namespace: api-istio
-    # Uncomment name to deploy api-istio namespace resources to cluster1
-    name: gke_monorepotest-323514_us-central1-a_cluster1
-    #server: https://kubernetes.default.svc
-  syncPolicy:
-    automated:
-      prune: true
-    syncOptions:
-      - CreateNamespace=true
+  generators:
+    - list:
+        elements:
+          - cluster: gke_monorepotest-323514_us-central1-a_cluster1
+            namespace: api-istio
+  template:
+    metadata:
+      name: 'authz-acl-{{cluster}}-{{namespace}}'
+    spec:
+      source:
+        repoURL: https://github.com/yerinu2019/cicd.git
+        targetRevision: HEAD
+        path: authz/graphql/acl
+        directory:
+          recurse: true
+      destination:
+        name: {{cluster}}
+        namespace: {{namespace}}
+      syncPolicy:
+        automated:
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
