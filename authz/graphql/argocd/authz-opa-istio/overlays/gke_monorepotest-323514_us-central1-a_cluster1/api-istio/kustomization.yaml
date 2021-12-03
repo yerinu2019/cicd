@@ -2,5 +2,15 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 bases:
   - ../../../base
-patchesStrategicMerge:
-  - argocd-app.yaml
+patchesJson6902:
+  - target:
+      version: v1alpha1
+      kind: Application
+      name: authz-opa-istio
+    patch: |-
+      - op: add
+        path: "/spec/destination/name"
+        value: "gke_monorepotest-323514_us-central1-a_cluster1"
+      - op: replace
+        path: /metadata/name
+        value: authz-opa-istio-gke-monorepotest-api-istio
