@@ -9,7 +9,7 @@ spec:
           - cluster: gke_monorepotest-323514_us-central1-a_cluster1
   template:
     metadata:
-      name: '{{cluster}}-authz-opa-istio
+      name: 'authz-opa-istio-{{cluster}}'
     spec:
       source:
         repoURL: https://github.com/yerinu2019/cicd.git

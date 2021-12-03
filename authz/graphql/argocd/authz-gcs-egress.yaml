@@ -10,7 +10,7 @@ spec:
             namespace: api-istio
   template:
     metadata:
-      name: '{{cluster}}-authz-gcs-egress
+      name: 'authz-gcs-egress-{{cluster}}-{{namespace}}'
     spec:
       source:
         repoURL: https://github.com/yerinu2019/cicd.git
