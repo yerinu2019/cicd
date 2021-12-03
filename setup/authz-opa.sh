@@ -7,7 +7,6 @@ switch-gke "cicd"
 argocd cluster add gke_monorepotest-323514_us-central1-a_cluster1 -y
 
 kubectl apply -f ../authz/graphql/argocd/authz-istio-envoy-filter.yaml
-kubectl apply -f ../authz/graphql/argocd/authz-operator.yaml
 kubectl apply -f ../authz/graphql/argocd/authz-opa-istio.yaml
 kubectl apply -f ../authz/graphql/argocd/authz-gcs-egress.yaml
 kubectl apply -f ../authz/graphql/argocd/authz-rego-configmap.yaml

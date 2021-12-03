@@ -7,10 +7,10 @@ spec:
   generators:
     - list:
         elements:
-          - cluster: gke_monorepotest-323514_us-central1-a_cluster1
+          - cluster: "gke_monorepotest-323514_us-central1-a_cluster1"
   template:
     metadata:
-      name: 'authz-opa-istio-{{cluster}}'
+      name: 'authz-opa-istio'
     spec:
       project: default
       source:
@@ -18,7 +18,7 @@ spec:
         targetRevision: HEAD
         path: authz/graphql/opa-istio
       destination:
-        name: {{cluster}}
+        name: "{{cluster}}"
         namespace: opa-istio
       syncPolicy:
         automated:

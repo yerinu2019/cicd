@@ -7,22 +7,22 @@ spec:
   generators:
     - list:
         elements:
-          - cluster: gke_monorepotest-323514_us-central1-a_cluster1
-            namespace: api-istio
-            gcs-bucket: test-opa-policy-bundles
-            bundle-name: authz-bundle
+          - cluster: "gke_monorepotest-323514_us-central1-a_cluster1"
+            namespace: "api-istio"
+            gcs-bucket: "test-opa-policy-bundles"
+            bundle-name: "authz-bundle"
   template:
     metadata:
-      name: 'authz-gcs-egress-{{cluster}}-{{namespace}}-{{gcs-bucket}}-{{bundle-name}}'
+      name: 'authz-gcs-egress-{{namespace}}-{{gcs-bucket}}-{{bundle-name}}'
     spec:
       project: default
       source:
         repoURL: https://github.com/yerinu2019/cicd.git
         targetRevision: HEAD
-        path: authz/graphql/rego-configmap/{{gcs-bucket}}/{{bundle-name}}
+        path: "authz/graphql/rego-configmap/{{gcs-bucket}}/{{bundle-name}}"
       destination:
-        name: {{cluster}}
-        namespace: {{namespace}}
+        name: "{{cluster}}"
+        namespace: "{{namespace}}"
       syncPolicy:
         automated:
           prune: true

@@ -7,11 +7,11 @@ spec:
   generators:
     - list:
         elements:
-          - cluster: gke_monorepotest-323514_us-central1-a_cluster1
-            namespace: api-istio
+          - cluster: "gke_monorepotest-323514_us-central1-a_cluster1"
+            namespace: "api-istio"
   template:
     metadata:
-      name: 'authz-gcs-egress-{{cluster}}-{{namespace}}'
+      name: "authz-gcs-egress-{{namespace}}"
     spec:
       project: default
       source:
@@ -19,8 +19,8 @@ spec:
         targetRevision: HEAD
         path: authz/graphql/gcs-egress
       destination:
-        name: {{cluster}}
-        namespace: {{namespace}}
+        name: "{{cluster}}"
+        namespace: "{{namespace}}"
       syncPolicy:
         automated:
           prune: true
