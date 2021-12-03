@@ -17,10 +17,10 @@ spec:
       source:
         repoURL: https://github.com/yerinu2019/cicd.git
         targetRevision: HEAD
-        path: authz/graphql/operator/{{cluster}}/{{namespace}}
+        path: "authz/graphql/operator/{{cluster}}/{{namespace}}"
       destination:
-        name: {{cluster}}
-        namespace: {{namespace}}
+        name: "{{cluster}}"
+        namespace: "{{namespace}}"
       syncPolicy:
         automated:
           prune: true
