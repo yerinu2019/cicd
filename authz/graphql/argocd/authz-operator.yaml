@@ -17,7 +17,7 @@ spec:
       source:
         repoURL: https://github.com/yerinu2019/cicd.git
         targetRevision: HEAD
-        path: "authz/graphql/operator/{{cluster}}/{{namespace}}"
+        path: "authz/graphql/operator/overlays/{{cluster}}/{{namespace}}"
       destination:
         name: "{{cluster}}"
         namespace: "{{namespace}}"
