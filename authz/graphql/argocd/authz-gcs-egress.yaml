@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: authz-gcs-egress
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: gke_monorepotest-323514_us-central1-a_cluster1
+            namespace: api-istio
+  template:
+    metadata:
+      name: '{{cluster}}-authz-gcs-egress
+    spec:
+      source:
+        repoURL: https://github.com/yerinu2019/cicd.git
+        targetRevision: HEAD
+        path: authz/graphql/gcs-egress
+      destination:
+        name: {{cluster}}
+        namespace: {{namespace}}
