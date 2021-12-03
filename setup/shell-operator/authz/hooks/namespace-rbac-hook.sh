@@ -17,7 +17,7 @@ kubernetes:
     group: main
     jqFilter: |
         {
-          namespace: .metadata.name,
+          name: .metadata.name,
           hasLabel: (
            .metadata.labels // {} |
              contains({"${LABEL}": "enabled"})
@@ -26,31 +26,6 @@ kubernetes:
     keepFullObjectsInMemory: false
     kind: Namespace
     name: namespaces
-  -
-    apiVersion: rbac.authorization.k8s.io/v1
-    jqFilter: |
-        {
-          "name": .metadata.name,
-        }
-    keepFullObjectsInMemory: false
-    kind: ClusterRoleBinding
-    labelSelector:
-      matchLabels:
-        "${LABEL}": "enabled"
-    name: cluster-roles
-  -
-    apiVersion: rbac.authorization.k8s.io/v1
-    jqFilter: |
-        {
-          "namespace": .metadata.namespace,
-          "name": .metadata.name,
-        }
-    keepFullObjectsInMemory: false
-    kind: RoleBinding
-    labelSelector:
-      matchLabels:
-        "${LABEL}": enabled
-    name: roles
 EOF
 }
 
@@ -126,27 +101,11 @@ subjects:
 EOF
 }
 
-function disable_rbac() {
-  ns_name=$1
-  for i in $(seq 0 "$(context::jq -r '(.snapshots.cluster-roles | length) - 1')"); do
-    name="$(context.jq -r '.snapshots.cluster-roles['"$i"'].filterResult.name')"
-    kubectl -n ${ns_name} delete clusterrolebinding ${name}
-  done
-
-  for i in $(seq 0 "$(context::jq -r '(.snapshots.cluster-roles | length) - 1')"); do
-    namespace="$(context.jq -r '.snapshots.roles['"$i"'].filterResult.namespace')"
-    if [[ $namespace -eq $ns_name ]]; then
-      name="$(context.jq -r '.snapshots.roles['"$i"'].filterResult.name')"
-      kubectl -n ${namespace} delete rolebindings ${name}
-    fi
-  done
-}
-
 function __main__() {
   for i in $(seq 0 "$(context::jq -r '(.snapshots.namespaces | length) - 1')"); do
     echo
     echo "check ns_name"
-    ns_name="$(context::jq -r '.snapshots.namespaces['"$i"'].filterResult.namespace')"
+    ns_name="$(context::jq -r '.snapshots.namespaces['"$i"'].filterResult.name')"
     echo "ns_name: ${ns_name}"
     if [[ -z ns_name || "$ns_name" == "null" ]]; then
       echo "skip null ns_name"
