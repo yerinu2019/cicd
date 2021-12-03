@@ -18,3 +18,8 @@ spec:
       destination:
         name: {{cluster}}
         namespace: opa-istio
+      syncPolicy:
+        automated:
+          prune: true
+        syncOptions:
+          - CreateNamespace=true

@@ -18,3 +18,8 @@ spec:
       destination:
         name: {{cluster}}
         namespace: istio-system
+      syncPolicy:
+        automated:
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
