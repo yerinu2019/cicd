@@ -8,10 +8,11 @@ spec:
     - list:
         elements:
           - cluster: gke_monorepotest-323514_us-central1-a_cluster1
+            cluster-name: gke-monorepotest-cluster1
             namespace: api-istio
   template:
     metadata:
-      name: 'authz-acl-{{cluster}}-{{namespace}}'
+      name: "authz-acl-{{cluster-name}}-{{namespace}}"
     spec:
       project: default
       source:
@@ -21,8 +22,8 @@ spec:
         directory:
           recurse: true
       destination:
-        name: {{cluster}}
-        namespace: {{namespace}}
+        name: "{{cluster}}"
+        namespace: "{{namespace}}"
       syncPolicy:
         automated:
           prune: true
