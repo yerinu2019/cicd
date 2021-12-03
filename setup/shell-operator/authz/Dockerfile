@@ -31,3 +31,4 @@ VOLUME ["/root/.config"]
 
 # install hook
 ADD hooks /hooks
+ADD common /common

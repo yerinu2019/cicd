@@ -4,7 +4,7 @@
 # make sure that the service account is bound to the GCP service account gcs_reader which has
 # permission to read Google Cloud Storage
 source /shell_lib.sh
-source /hooks/common/k8s.sh
+source /common/k8s.sh
 
 LABEL="gcs-reader"
 function __config__() {
