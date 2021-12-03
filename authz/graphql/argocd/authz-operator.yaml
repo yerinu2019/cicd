@@ -7,11 +7,11 @@ spec:
   generators:
     - list:
         elements:
-          - cluster: gke_monorepotest-323514_us-central1-a_cluster1
-            namespace: api-istio
+          - cluster: "gke_monorepotest-323514_us-central1-a_cluster1"
+            namespace: "api-istio"
   template:
     metadata:
-      name: 'authz-operator-{{namespace}}'
+      name: "authz-operator-{{namespace}}"
     spec:
       project: default
       source:
