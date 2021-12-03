@@ -13,6 +13,7 @@ spec:
     metadata:
       name: 'authz-acl-{{cluster}}-{{namespace}}'
     spec:
+      project: default
       source:
         repoURL: https://github.com/yerinu2019/cicd.git
         targetRevision: HEAD

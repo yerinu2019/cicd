@@ -12,6 +12,7 @@ spec:
     metadata:
       name: 'authz-opa-istio-{{cluster}}'
     spec:
+      project: default
       source:
         repoURL: https://github.com/yerinu2019/cicd.git
         targetRevision: HEAD

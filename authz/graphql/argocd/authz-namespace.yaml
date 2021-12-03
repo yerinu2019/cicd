@@ -4,7 +4,6 @@ metadata:
   name: authz-namespace
   namespace: argocd
 spec:
-  project: default
   generators:
     - list:
         elements:
@@ -13,6 +12,7 @@ spec:
     metadata:
       name: 'authz-namespace-{{cluster}}'
     spec:
+      project: default
       source:
         repoURL: https://github.com/yerinu2019/cicd.git
         targetRevision: HEAD
