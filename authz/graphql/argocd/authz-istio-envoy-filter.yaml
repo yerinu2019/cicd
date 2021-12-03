@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: authz-istio-envoy-filter
+  namespace: argocd
 spec:
   generators:
     - list:
