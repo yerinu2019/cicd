@@ -11,15 +11,15 @@ function gcp::bind_gcp_service_account() {
   K8S_SERVICE_ACCOUNT=$2
   K8S_NAMESPACE=$3
   GCP_PROJECT_ID=$(gcloud config get-value project)
-  ANNOTATION_KEY="iam.gke.io/gcp-service-account"
+  ANNOTATION_KEY="iam\.gke\.io/gcp-service-account"
   ANNOTATION_VALUE="${GCP_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
 
   # Add service account annotation to GCP service account
-  CHECK=`kubectl -n ${K8S_NAMESPACE} describe sa ${K8S_SERVICE_ACCOUNT} | grep ${ANNOTATION_KEY}`
+  CHECK=`kubectl -n ${K8S_NAMESPACE} get sa ${K8S_SERVICE_ACCOUNT} -o jsonpath="{.metadata.annotations.${ANNOTATION_KEY}}"`
   if [[ -z "${CHECK}" ]]; then
     kubectl annotate sa \
           -n ${K8S_NAMESPACE} ${K8S_SERVICE_ACCOUNT} \
-          iam.gke.io/gcp-service-account=${GCP_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com
+          ${ANNOTATION_KEY}=${ANNOTATION_VALUE}
   fi
 
   # Bind service service account to workloadIdentity user
