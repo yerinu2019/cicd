@@ -188,7 +188,7 @@ data:
       "env": [{
         "name": "GOOGLE_APPLICATION_CREDENTIALS",
         "value": "/var/secrets/google/key.json"
-      }]
+      }],
       "readinessProbe": {
         "httpGet": {
           "path": "/health?plugins",
