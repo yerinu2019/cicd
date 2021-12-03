@@ -135,6 +135,10 @@ data:
       "value": opa_container,
     }, {
       "op": "add",
+      "path": "/spec/volumes/-",
+      "value": opa_volume,
+    }, {
+      "op": "add",
       "path": "/spec/containers/-",
       "value": kubemgmt_container,
     }, {
@@ -151,6 +155,13 @@ data:
           "--enable-data",
           "--replicate=example.com/v1alpha1/graphqlpolicies"
       ],
+    }
+
+    opa_volume = {
+      "name": "google-cloud-key",
+      "secret": {
+        "secretName": "gcs-reader-key"
+      }
     }
 
     opa_container = {
@@ -170,8 +181,14 @@ data:
       "volumeMounts": [{
         "mountPath": "/config",
         "name": "rego-config",
-      }
-      ],
+      }, {
+        "name": "google-cloud-key",
+        "mountPath": "/var/secret/google"
+      }],
+      "env": [{
+        "name": "GOOGLE_APPLICATION_CREDENTIALS",
+        "value": "/var/secrets/google/key.json"
+      }]
       "readinessProbe": {
         "httpGet": {
           "path": "/health?plugins",

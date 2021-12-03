@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: authz-opa-istio
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: gke_monorepotest-323514_us-central1-a_cluster1
+  template:
+    metadata:
+      name: '{{cluster}}-authz-opa-istio
+    spec:
+      source:
+        repoURL: https://github.com/yerinu2019/cicd.git
+        targetRevision: HEAD
+        path: authz/graphql/opa-istio
+      destination:
+        name: {{cluster}}
+        namespace: opa-istio
