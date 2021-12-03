@@ -4,6 +4,7 @@ metadata:
   name: api2
   labels:
     authz-opa-istio-injection: "enabled"
+    gcs-reader: "enabled"
 ---
 apiVersion: apps/v1
 kind: Deployment
