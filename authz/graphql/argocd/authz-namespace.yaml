@@ -10,7 +10,7 @@ spec:
           - cluster: "gke_monorepotest-323514_us-central1-a_cluster1"
   template:
     metadata:
-      name: "authz-namespace-{{cluster}}"
+      name: "authz-namespace"
     spec:
       project: default
       source:
