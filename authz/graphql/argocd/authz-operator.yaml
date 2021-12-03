@@ -11,7 +11,7 @@ spec:
             namespace: api-istio
   template:
     metadata:
-      name: 'authz-operator-{{cluster}}-{{namespace}}'
+      name: 'authz-operator-{{namespace}}'
     spec:
       project: default
       source:
