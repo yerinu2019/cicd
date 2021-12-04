@@ -35,15 +35,13 @@ function k8s::bind-gcp-service-account() {
   fi
   GCP_SERVICE_ACCOUNT=$1
   for i in $(seq 0 "$(context::jq -r '(.snapshots.sa | length) - 1')"); do
-    echo
-    echo "check name"
     sa_name="$(context::jq -r '.snapshots.sa['"$i"'].filterResult.name')"
     sa_namespace="$(context::jq -r '.snapshots.sa['"$i"'].filterResult.namespace')"
-    echo "name: ${sa_name}"
     if [[ -z sa_name || "$sa_name" == "null" ]]; then
       echo "skip null sa_name"
     else
       if context::jq -e '.snapshots.sa['"$i"'].filterResult.hasLabel' ; then
+        echo "bind GCP service account $GCP_SERVICE_ACCOUNT to $sa_name/$sa_namespace"
         gcp::bind_gcp_service_account $GCP_SERVICE_ACCOUNT $sa_name $sa_namespace
       fi
     fi
