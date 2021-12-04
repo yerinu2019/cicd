@@ -160,7 +160,7 @@ data:
     opa_volume = {
       "name": "google-cloud-key",
       "secret": {
-        "secretName": "gcs-reader-key"
+        "secretName": "gcs-reader-secret"
       }
     }
 
