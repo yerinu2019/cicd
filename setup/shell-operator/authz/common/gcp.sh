@@ -11,11 +11,12 @@ function gcp::bind_gcp_service_account() {
   K8S_SERVICE_ACCOUNT=$2
   K8S_NAMESPACE=$3
   GCP_PROJECT_ID=$(gcloud config get-value project)
-  ANNOTATION_KEY="iam\.gke\.io/gcp-service-account"
+  ANNOTATION_KEY_SEARCH="iam\.gke\.io/gcp-service-account"
+  ANNOTATION_KEY="iam.gke.io/gcp-service-account"
   ANNOTATION_VALUE="${GCP_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
 
   # Add service account annotation to GCP service account
-  CHECK=`kubectl -n ${K8S_NAMESPACE} get sa ${K8S_SERVICE_ACCOUNT} -o jsonpath="{.metadata.annotations.${ANNOTATION_KEY}}"`
+  CHECK=`kubectl -n ${K8S_NAMESPACE} get sa ${K8S_SERVICE_ACCOUNT} -o jsonpath="{.metadata.annotations.${ANNOTATION_KEY_SEARCH}}"`
   if [[ -z "${CHECK}" ]]; then
     kubectl annotate sa \
           -n ${K8S_NAMESPACE} ${K8S_SERVICE_ACCOUNT} \
