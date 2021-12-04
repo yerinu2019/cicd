@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: authz-acl
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: gke_monorepotest-323514_us-central1-a_cluster1
+            cluster-name: gke-monorepotest-cluster1
+            namespace: clientns
+  template:
+    metadata:
+      name: "authz-acl-{{cluster-name}}-{{namespace}}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/yerinu2019/cicd.git
+        targetRevision: HEAD
+        path: authz/graphql/client
+        directory:
+          recurse: true
+      destination:
+        name: "{{cluster}}"
+        namespace: "{{namespace}}"
+      syncPolicy:
+        automated:
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
