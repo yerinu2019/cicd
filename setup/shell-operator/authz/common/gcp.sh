@@ -44,7 +44,7 @@ function gcp::bind_gcp_service_account() {
           --iam-account=${GCP_SERVICE_ACCOUNT}@${GCP_PROJECT_ID}.iam.gserviceaccount.com
 
     # Create k8s secret for the gcp service account
-    kubectl -n ${K8S_NAMESPACE} create secret generic ${SECRET_NAME} --from-file=key.json=${KEY_FILE}.json
+    kubectl -n ${K8S_NAMESPACE} create secret generic ${SECRET_NAME} --from-file=key.json=${KEY_FILE}
 
     # Associate the secret with the k8s service account
     kubectl -n ${K8S_NAMESPACE} patch serviceaccount ${K8S_SERVICE_ACCOUNT} -p '{"imagePullSecrets": [{"name": "${SECRET_NAME}"}]}'
