@@ -8,7 +8,7 @@ spec:
     - list:
         elements:
           - cluster: "gke_monorepotest-323514_us-central1-a_cluster1"
-            namespace: "api-istio"
+            namespace: "opa-istio"
   template:
     metadata:
       name: "authz-operator-{{namespace}}"
