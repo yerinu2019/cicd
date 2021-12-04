@@ -46,6 +46,7 @@ use-workload-identity $GCP_SERVICE_ACCOUNT $K8S_NAMESPACE $K8S_SERVICE_ACCOUNT
 
 create-gcp-service-account "gcp-sa-creator"
 bind-role "gcp-sa-creator" "roles/iam.serviceAccountAdmin"
+use-workload-identity "gcp-sa-creator" "opa-istio" "authz-operator"
 
 create-gcp-service-account "gcs-reader"
 bind-role "gcs-reader" "roles/storage.objectViewer"

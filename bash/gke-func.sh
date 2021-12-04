@@ -125,6 +125,11 @@ function use-workload-identity() {
       --role roles/iam.workloadIdentityUser \
       --member "serviceAccount:${GCP_PROJECT_ID}.svc.id.goog[${K8S_NAMESPACE}/${K8S_SERVICE_ACCOUNT}]"
 
+  CHECK=`kubectl get ns ${K8S_NAMESPACE} -o jsonpath="{.metadata.name}"`
+  if [[ -z "${CHECK}" ]]; then
+    kubectl create ns ${K8S_NAMESPACE}
+  fi
+
   CHECK=`kubectl -n ${K8S_NAMESPACE} get sa | grep ${K8S_SERVICE_ACCOUNT}`
   if [[ -z "${CHECK}" ]]; then
     kubectl -n ${K8S_NAMESPACE} create sa ${K8S_SERVICE_ACCOUNT}
