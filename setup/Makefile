@@ -69,7 +69,7 @@ gke-cicd-cleanup:
 	./gke-delete.sh cicd
 
 gke-cluster-1:
-	./gke-create.sh cluster1 istio
+	./gke-app-cluster.sh cluster1
 gke-cluster1-cleanup:
 	./gke-delete.sh cluster1
 
