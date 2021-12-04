@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: authz-gcs-egress
+  name: authz-rego-configmap
   namespace: argocd
 spec:
   generators:
@@ -13,7 +13,7 @@ spec:
             bundle-name: "authz-bundle"
   template:
     metadata:
-      name: 'authz-gcs-egress-{{namespace}}-{{gcs-bucket}}-{{bundle-name}}'
+      name: 'authz-rego-configmap-{{namespace}}-{{gcs-bucket}}-{{bundle-name}}'
     spec:
       project: default
       source:

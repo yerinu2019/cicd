@@ -1,7 +1,7 @@
 #!/bin/bash
 if [[ "$#" -lt 1 ]]; then
     echo "Usage: gke-create.sh <cluster-name> [istio <zone> <region> <gcp-project>]"
-    exit -1
+    exit 255
 fi
 
 source ../bash/gke-func.sh
@@ -47,9 +47,6 @@ use-workload-identity $GCP_SERVICE_ACCOUNT $K8S_NAMESPACE $K8S_SERVICE_ACCOUNT
 create-gcp-service-account "gcp-sa-creator"
 bind-role "gcp-sa-creator" "roles/iam.serviceAccountAdmin"
 use-workload-identity "gcp-sa-creator" "opa-istio" "authz-operator"
-
-create-gcp-service-account "gcs-reader"
-bind-role "gcs-reader" "roles/storage.objectViewer"
 
 
 # install argo events to all gke cluster

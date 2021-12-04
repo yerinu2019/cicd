@@ -1,7 +1,76 @@
 #!/bin/bash
-source /common/gcp.sh
+. /common/gcp.sh
 
-k8s::service-account-filter() {
+function k8s::resource-label-filter() {
+  if [[ "$#" -ne 4 ]]; then
+      echo "Usage: k8s::resource-label-filter <resource type> <label> <label-value> <shell-operator snapshot name>"
+      exit 255
+  fi
+  RESOURCE_TYPE=$1
+  LABEL=$2
+  LABEL_VALUE=$3
+  SNAPSHOT_NAME=$4
+  cat <<EOF
+    configVersion: v1
+    kubernetes:
+      -
+        apiVersion: v1
+        group: main
+        jqFilter: |
+            {
+              name: .metadata.name,
+              namespace: .metadata.namespace,
+              rego-bundle-url: .metadata.annotations.rego-bundle-url,
+              rego-bundle-file: .metadata.annotations.rego-bundle-file,
+              kube-mgmt-replicate: .metadata.annotations.kube-mgmt-replicate,
+              policy-crd: .metadata.annotations.policy-crd,
+              policy-crd-group: .metadata.annotations.policy-crd-group,
+              labelMatched: (
+               .metadata.labels // {} |
+                 contains({"${LABEL}": "${LABEL_VALUE}"})
+              )
+            }
+        keepFullObjectsInMemory: false
+        kind: ${RESOURCE_TYPE}
+        name: ${SNAPSHOT_NAME}
+EOF
+}
+
+function k8s::label() {
+  if [[ "$#" -ne 5 ]]; then
+      echo "Usage: k8s::label <namespace> <resource-type> <name> <label> <label-value>"
+      exit 255
+  fi
+  NAMESPACE=$1
+  RESOURCE_TYPE=$2
+  NAME=$3
+  LABEL=$4
+  VALUE=$5
+
+  if [[ ${RESOURCE_TYPE,,} -eq "namespace"]]]; then
+    CHECK=$(kubectl get ns ${NAMESPACE} -o jsonpath="{.metadata.labels.${LABEL}}")
+    if [[ -z "${CHECK}" ]]; then
+      kubectl label namespace ${NAMESPACE} ${LABEL}="${VALUE}"
+    fi
+  else
+    CHECK=$(kubectl -n ${NAMESPACE} get ${RESOURCE_TYPE} -o jsonpath="{.metadata.labels.${LABEL}}")
+    if [[ -z "${CHECK}" ]]; then
+      kubectl label -n ${NAMESPACE} ${RESOURCE_TYPE} ${LABEL}="${VALUE}"
+    fi
+  fi
+}
+
+function k8s::ensure_istio_enabled() {
+  if [[ "$#" -ne 1 ]]; then
+      echo "Usage: k8s::ensure_istio_enabled <namespace>"
+      exit 255
+  fi
+  NAMESPACE=$1
+  LABEL="istio-injection"
+  k8s::label $NAMESPACE namespace $NAMESPACE $LABEL "enabled"
+}
+
+function k8s::service-account-filter() {
   if [[ "$#" -ne 1 ]]; then
       echo "Usage: k8s::service-account-filter <label>"
       exit -1
@@ -26,24 +95,4 @@ k8s::service-account-filter() {
       kind: ServiceAccount
       name: sa
 EOF
-}
-
-function k8s::bind-gcp-service-account() {
-  if [[ "$#" -ne 1 ]]; then
-      echo "Usage: k8s::bind-gcp-service-account <gcp service account>"
-      exit -1
-  fi
-  GCP_SERVICE_ACCOUNT=$1
-  for i in $(seq 0 "$(context::jq -r '(.snapshots.sa | length) - 1')"); do
-    sa_name="$(context::jq -r '.snapshots.sa['"$i"'].filterResult.name')"
-    sa_namespace="$(context::jq -r '.snapshots.sa['"$i"'].filterResult.namespace')"
-    if [[ -z sa_name || "$sa_name" == "null" ]]; then
-      echo "skip null sa_name"
-    else
-      if context::jq -e '.snapshots.sa['"$i"'].filterResult.hasLabel' ; then
-        echo "bind GCP service account $GCP_SERVICE_ACCOUNT to $sa_name/$sa_namespace"
-        gcp::bind_gcp_service_account $GCP_SERVICE_ACCOUNT $sa_name $sa_namespace
-      fi
-    fi
-  done
 }
