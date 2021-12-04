@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: authz-acl
+  name: authz-client
   namespace: argocd
 spec:
   generators:
@@ -12,7 +12,7 @@ spec:
             namespace: clientns
   template:
     metadata:
-      name: "authz-acl-{{cluster-name}}-{{namespace}}"
+      name: "authz-client-{{cluster-name}}-{{namespace}}"
     spec:
       project: default
       source:
