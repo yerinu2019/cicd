@@ -37,7 +37,7 @@ function gcp::bind_gcp_service_account() {
   SECRET_NAME="${GCP_SERVICE_ACCOUNT}-secret"
   echo "kubectl -n ${K8S_NAMESPACE} get sa ${K8S_SERVICE_ACCOUNT} -o json"
   echo `kubectl -n ${K8S_NAMESPACE} get sa ${K8S_SERVICE_ACCOUNT} -o json`
-  CHECK=`kubectl -n ${K8S_NAMESPACE} get sa ${K8S_SERVICE_ACCOUNT} -o json | jq -r '.imagePullSecrets[] | select(.name | test("${SECRET_NAME}")).name'`
+  CHECK=`kubectl -n ${K8S_NAMESPACE} get sa ${K8S_SERVICE_ACCOUNT} -o json | jq -r '.imagePullSecrets[]? | select(.name | test("${SECRET_NAME}")).name'`
   if [[ -z "${CHECK}" ]]; then
     # Create secret key file
     gcloud iam service-accounts keys create ${KEY_FILE} \
