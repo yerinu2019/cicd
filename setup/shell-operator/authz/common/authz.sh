@@ -27,7 +27,6 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
       if [[ -z "${OPA_CONFIG}" ]]; then
         continue
       fi
-      echo "OPA_CONFIG: ${OPA_CONFIG}"
       REGO_BUNDLE_URL=$(echo $OPA_CONFIG | jq -r '.spec."rego-bundle-url"')
       REGO_BUNDLE_FILE=$(echo $OPA_CONFIG | jq -r '.spec."rego-bundle-file"')
       KUBE_MGMT_REPLICATE=$(echo $OPA_CONFIG | jq -r '.spec."kube-mgmt-replicate"')
@@ -44,7 +43,7 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
 
       kubectl apply -f /common/opa/opa-envoy-filter.yaml
       kubectl apply -f /common/opa/opa-istio.yaml
-      kubectl -n "${NAMESPACE}" -f /common/opa/gcs-egress.yaml
+      kubectl -n "${NAMESPACE}" apply -f /common/opa/gcs-egress.yaml
 
       # associate service account
       DEPLOYMENT_NAME="$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.name')"
