@@ -10,7 +10,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api1
-  checksum: "1"
   labels:
     authz-opa-istio: "enabled"
   annotations:
