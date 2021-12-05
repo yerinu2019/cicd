@@ -20,11 +20,7 @@ function k8s::resource-label-filter() {
             {
               name: .metadata.name,
               namespace: .metadata.namespace,
-              rego-bundle-url: .metadata.annotations.rego-bundle-url,
-              rego-bundle-file: .metadata.annotations.rego-bundle-file,
-              kube-mgmt-replicate: .metadata.annotations.kube-mgmt-replicate,
-              policy-crd: .metadata.annotations.policy-crd,
-              policy-crd-group: .metadata.annotations.policy-crd-group,
+              opa-config: .metadata.annotations.opa-config,
               labelMatched: (
                .metadata.labels // {} |
                  contains({"${LABEL}": "${LABEL_VALUE}"})

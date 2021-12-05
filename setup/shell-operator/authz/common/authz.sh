@@ -16,19 +16,32 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
 
     if [[ $LABEL_MATCHED ]]; then
       NAMESPACE=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.namespace')
-      REGO_BUNDLE_URL=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.rego-bundle-url')
-      REGO_BUNDLE_FILE=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.rego-bundle-file')
-      KUBE_MGMT_REPLICATE=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.kube-mgmt-replicate')
-      POLICY_CRD=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.policy-crd')
-      POLICY_CRD_GROUP=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.policy-crd-group')
+      OPA_CONFIG_NAME=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.opa-config')
+      if [[ -z "${OPA_CONFIG_NAME}"]]; then
+        continue
+      fi
+      OPA_CONFIG=$(kubectl -n "${NAMESPACE}" --ignore-not-found=true get opaconfig "${OPA_CONFIG_NAME}" -o json)
+
+      if [[ -z "${OPA_CONFIG}"]]; then
+        continue
+      fi
+
+      REGO_BUNDLE_URL=$(echo $OPA_CONFIG | jq -r '.spec.rego-bundle-url')
+      REGO_BUNDLE_FILE=$(echo $OPA_CONFIG | jq -r '.spec.rego-bundle-file')
+      KUBE_MGMT_REPLICATE=$(echo $OPA_CONFIG | jq -r '.spec.kube-mgmt-replicate')
+      POLICY_CRD_NAME=$(echo $OPA_CONFIG | jq -r '.spec.policy-crd-name')
+      POLICY_CRD_GROUP=$(echo $OPA_CONFIG | jq -r '.spec.policy-crd-group')
+      POLICY_CRD_VERSION=$(echo $OPA_CONFIG | jq -r '.spec.policy-crd-version')
+
+      authz::setup-rbac "${NAMESPACE}" "${POLICY_CRD_NAME}" "${POLICY_CRD_GROUP}"
+      kubectl apply -f /common/opa/opa-config-crd.yaml
+      authz::create-rego-configmap "${REGO_BUNDLE_URL}" "${REGO_BUNDLE_FILE}"
+      authz::create-inject-configmap "${NAMESPACE}" "${KUBE_MGMT_REPLICATE}"
 
       # ensure namespace is istio enabled
       k8s::ensure_istio_enabled "$NAMESPACE"
 
-      authz::setup-rbac "${NAMESPACE}" "${POLICY_CRD}" "${POLICY_CRD_GROUP}"
       kubectl apply -f /common/opa/opa-envoy-filter.yaml
-      authz::create-rego-configmap "${REGO_BUNDLE_URL}" "${REGO_BUNDLE_FILE}"
-      authz::create-inject-configmap "${NAMESPACE}" "${KUBE_MGMT_REPLICATE}"
       kubectl apply -f /common/opa/opa-istio.yaml
       kubectl -n "${NAMESPACE}" -f /common/opa/gcs-egress.yaml
 
