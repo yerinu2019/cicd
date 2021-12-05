@@ -27,7 +27,7 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
       if [[ -z "${OPA_CONFIG}" ]]; then
         continue
       fi
-
+      echo "OPA_CONFIG: ${OPA_CONFIG}"
       REGO_BUNDLE_URL=$(echo $OPA_CONFIG | jq -r '.spec.rego-bundle-url')
       REGO_BUNDLE_FILE=$(echo $OPA_CONFIG | jq -r '.spec.rego-bundle-file')
       KUBE_MGMT_REPLICATE=$(echo $OPA_CONFIG | jq -r '.spec.kube-mgmt-replicate')
