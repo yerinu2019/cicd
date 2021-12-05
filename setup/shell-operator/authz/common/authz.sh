@@ -11,7 +11,7 @@ function authz::authz-opa-istio-deployment-filter() {
 
 function authz::handle-authz-opa-istio-enabled-deployment() {
   SNAPSHOT_NAME="deployments"
-  echo "snapshot: $(context::jq -r '(.snapshots.${SNAPSHOT_NAME})')"
+  echo "snapshot: $(context::jq -r '(.snapshots.deployments)')"
   for i in $(seq 0 "$(context::jq -r '(.snapshots.${SNAPSHOT_NAME} | length) - 1')"); do
     LABEL_MATCHED=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.labelMatched')
     NAMESPACE=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.namespace')
