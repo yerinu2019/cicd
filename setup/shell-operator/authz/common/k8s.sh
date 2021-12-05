@@ -43,7 +43,7 @@ function k8s::label() {
   LABEL=$4
   VALUE=$5
 
-  if [[ ${RESOURCE_TYPE,,} -eq "namespace"]]]; then
+  if [[ ${RESOURCE_TYPE,,} -eq "namespace"]]; then
     CHECK=$(kubectl get ns ${NAMESPACE} -o jsonpath="{.metadata.labels.${LABEL}}")
     if [[ -z "${CHECK}" ]]; then
       kubectl label namespace ${NAMESPACE} ${LABEL}="${VALUE}"
