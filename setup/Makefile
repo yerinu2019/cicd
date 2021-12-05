@@ -1,7 +1,7 @@
 .PHONY: all bin tools infra kubectl kustomize opa helm tkn argocd-cli gke-cicd external-dns external-dns-verify \
 	cleanup gke-cicd-cleanup gke-cluster1-cleanup external-dns-cleanup external-dns-verify-cleanup \
 	tekton argocd argocd-first-password istioctl argo-events \
-	authz authz-rego authz-opa authz-operator authz-namespace authz-example
+	authz authz-rego authz-opa authz-operator authz-example
 all: infra listeners
 
 bin:
@@ -14,13 +14,11 @@ istioctl:
 
 infra: gke-cicd external-dns argocd gke-cluster-1
 
-#authz: gke-cicd external-dns argocd gke-cluster-1 authz-namespace authz-operator authz-opa authz-acl authz-client
-authz: gke-cicd external-dns argocd gke-cluster-1 authz-namespace authz-operator
+#authz: gke-cicd external-dns argocd gke-cluster-1 authz-operator authz-opa authz-acl authz-client
+authz: gke-cicd external-dns argocd gke-cluster-1 authz-operator
 
 authz-example:
 	./authz-example.sh
-authz-namespace:
-	./authz-namespace.sh
 authz-operator:
 	./authz-operator.sh
 authz-rego: tekton
