@@ -11,10 +11,12 @@ function authz::authz-opa-istio-deployment-filter() {
 
 function authz::handle-authz-opa-istio-enabled-deployment() {
   SNAPSHOT_NAME="deployments"
-  for i in $(seq 0 "$(context::jq -r '(.snapshots.sa | length) - 1')"); do
+  echo "snapshot: $(context::jq -r '(.snapshots.${SNAPSHOT_NAME})')"
+  for i in $(seq 0 "$(context::jq -r '(.snapshots.${SNAPSHOT_NAME} | length) - 1')"); do
     LABEL_MATCHED=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.labelMatched')
     NAMESPACE=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.namespace')
     NAME=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.namespace')
+    AUTHZRUN=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.authzrun')
     echo "Deployment ${NAME}/${NAMESPACE}, LABEL_MATCHED: ${LABEL_MATCHED}"
     if [[ $LABEL_MATCHED ]]; then
       OPA_CONFIG_NAME=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.opaconfig')
