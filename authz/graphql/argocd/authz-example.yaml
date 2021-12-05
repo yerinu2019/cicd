@@ -12,7 +12,7 @@ spec:
             namespace: api-istio
   template:
     metadata:
-      name: "authz-acl-{{cluster-name}}-{{namespace}}"
+      name: "authz-example-{{cluster-name}}-{{namespace}}"
     spec:
       project: default
       source:
