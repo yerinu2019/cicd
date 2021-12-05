@@ -23,6 +23,7 @@ function k8s::resource-label-filter() {
               name: .metadata.name,
               namespace: .metadata.namespace,
               opaconfig: .metadata.annotations.opaconfig,
+              authzrun: .metadata.annotations.authzrun,
               labelMatched: (
                .metadata.labels // {} |
                  contains({"${LABEL}": "${LABEL_VALUE}"})
