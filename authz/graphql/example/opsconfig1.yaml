@@ -1,0 +1,12 @@
+apiVersion: "example.com/v1alpha1"
+kind: OpaConfig
+metadata:
+  name: opaconfig1
+  namespace: api-istio
+spec:
+  rego-bundle-url: https://storage.googleapis.com/test-opa-policy-bundles
+  rego-bundle-file: authz-bundle.tar.gz
+  kube-mgmt-replicate: example.com/v1alpha1/graphqlpolicies
+  policy-crd-name: graphqlpolicies
+  policy-crd-version: v1alpha
+  policy-crd-group: example.com
