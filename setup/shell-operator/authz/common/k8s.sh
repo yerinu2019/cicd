@@ -2,19 +2,21 @@
 . /common/gcp.sh
 
 function k8s::resource-label-filter() {
-  if [[ "$#" -ne 4 ]]; then
-      echo "Usage: k8s::resource-label-filter <resource type> <label> <label-value> <shell-operator snapshot name>"
+  if [[ "$#" -ne 6 ]]; then
+      echo "Usage: k8s::resource-label-filter <api group> <api version> <resource type> <label> <label-value> <shell-operator snapshot name>"
       exit 255
   fi
-  RESOURCE_TYPE=$1
-  LABEL=$2
-  LABEL_VALUE=$3
-  SNAPSHOT_NAME=$4
+  API_GROUP=$1
+  API_VERSION=$2
+  RESOURCE_TYPE=$3
+  LABEL=$4
+  LABEL_VALUE=$5
+  SNAPSHOT_NAME=$6
   cat <<EOF
-    configVersion: v1
+    configVersion: ${API_VERSION}
     kubernetes:
       -
-        apiVersion: v1
+        apiVersion: ${API_GROUP}/${API_VERSION}
         group: main
         jqFilter: |
             {

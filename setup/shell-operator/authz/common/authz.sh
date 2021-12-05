@@ -6,7 +6,7 @@ function authz::authz-opa-istio-deployment-filter() {
   LABEL="authz-opa-istio"
   LABEL_VALUE="enabled"
   RESOURCE_TYPE="Deployment"
-  k8s::resource-label-filter $RESOURCE_TYPE $LABEL $LABEL_VALUE $SNAPSHOT_NAME
+  k8s::resource-label-filter "apps" "v1" $RESOURCE_TYPE $LABEL $LABEL_VALUE $SNAPSHOT_NAME
 }
 
 function authz::handle-authz-opa-istio-enabled-deployment() {
