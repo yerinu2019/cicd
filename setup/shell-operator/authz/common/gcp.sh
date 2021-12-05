@@ -7,7 +7,7 @@ function k8s::ensure_service_account() {
   fi
   NAMESPACE=$1
   NAME=$2
-  CHECK=$(kubectl -n "${NAMESPACE}" get sa -o jsonpath="{.metadata.name}")
+  CHECK=$(kubectl -n "${NAMESPACE}" get sa ${NAME} -o jsonpath="{.metadata.name}")
   if [[ -z "${CHECK}" ]]; then
     kubectl -n "${NAMESPACE}" create sa "${NAME}"
   fi
