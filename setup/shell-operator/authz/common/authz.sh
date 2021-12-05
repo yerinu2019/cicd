@@ -28,12 +28,12 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
         continue
       fi
       echo "OPA_CONFIG: ${OPA_CONFIG}"
-      REGO_BUNDLE_URL=$(echo $OPA_CONFIG | jq -r '.spec.rego-bundle-url')
-      REGO_BUNDLE_FILE=$(echo $OPA_CONFIG | jq -r '.spec.rego-bundle-file')
-      KUBE_MGMT_REPLICATE=$(echo $OPA_CONFIG | jq -r '.spec.kube-mgmt-replicate')
-      POLICY_CRD_NAME=$(echo $OPA_CONFIG | jq -r '.spec.policy-crd-name')
-      POLICY_CRD_GROUP=$(echo $OPA_CONFIG | jq -r '.spec.policy-crd-group')
-      POLICY_CRD_VERSION=$(echo $OPA_CONFIG | jq -r '.spec.policy-crd-version')
+      REGO_BUNDLE_URL=$(echo $OPA_CONFIG | jq -r '.spec."rego-bundle-url"')
+      REGO_BUNDLE_FILE=$(echo $OPA_CONFIG | jq -r '.spec."rego-bundle-file"')
+      KUBE_MGMT_REPLICATE=$(echo $OPA_CONFIG | jq -r '.spec."kube-mgmt-replicate"')
+      POLICY_CRD_NAME=$(echo $OPA_CONFIG | jq -r '.spec."policy-crd-name"')
+      POLICY_CRD_GROUP=$(echo $OPA_CONFIG | jq -r '.spec."policy-crd-group"')
+      POLICY_CRD_VERSION=$(echo $OPA_CONFIG | jq -r '.spec."policy-crd-version"')
 
       authz::setup-rbac "${NAMESPACE}" "${POLICY_CRD_NAME}" "${POLICY_CRD_GROUP}"
       authz::create-rego-configmap "${REGO_BUNDLE_URL}" "${REGO_BUNDLE_FILE}"
