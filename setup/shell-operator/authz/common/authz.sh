@@ -11,15 +11,14 @@ function authz::authz-opa-istio-deployment-filter() {
 
 function authz::handle-authz-opa-istio-enabled-deployment() {
   SNAPSHOT_NAME="deployments"
-  echo "snapshot: $(context::jq -r '(.snapshots.deployments)')"
-  for i in $(seq 0 "$(context::jq -r '(.snapshots.${SNAPSHOT_NAME} | length) - 1')"); do
-    LABEL_MATCHED=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.labelMatched')
-    NAMESPACE=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.namespace')
-    NAME=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.namespace')
-    AUTHZRUN=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.authzrun')
+  for i in $(seq 0 "$(context::jq -r '(.snapshots.deployments | length) - 1')"); do
+    LABEL_MATCHED=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.labelMatched')
+    NAMESPACE=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.namespace')
+    NAME=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.namespace')
+    AUTHZRUN=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.authzrun')
     echo "Deployment ${NAME}/${NAMESPACE}, LABEL_MATCHED: ${LABEL_MATCHED}"
     if [[ $LABEL_MATCHED ]]; then
-      OPA_CONFIG_NAME=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.opaconfig')
+      OPA_CONFIG_NAME=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.opaconfig')
       if [[ -z "${OPA_CONFIG_NAME}" ]]; then
         continue
       fi
@@ -48,7 +47,7 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
       kubectl -n "${NAMESPACE}" -f /common/opa/gcs-egress.yaml
 
       # associate service account
-      DEPLOYMENT_NAME="$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.name')"
+      DEPLOYMENT_NAME="$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.name')"
       SERVICE_ACCOUNT_NAME=$DEPLOYMENT_NAME
       k8s::ensure_service_account "$NAMESPACE" "$SERVICE_ACCOUNT_NAME"
       kubectl -n "${NAMESPACE}" set sa deployment "${DEPLOYMENT_NAME}" "${SERVICE_ACCOUNT_NAME}"
