@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: authz-acl
+  name: authz-example
   namespace: argocd
 spec:
   generators:
@@ -18,7 +18,7 @@ spec:
       source:
         repoURL: https://github.com/yerinu2019/cicd.git
         targetRevision: HEAD
-        path: authz/graphql/acl
+        path: authz/graphql/example
         directory:
           recurse: true
       destination:
