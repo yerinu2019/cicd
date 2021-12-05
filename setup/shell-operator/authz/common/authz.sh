@@ -16,7 +16,7 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
 
     if [[ $LABEL_MATCHED ]]; then
       NAMESPACE=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.namespace')
-      OPA_CONFIG_NAME=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.opa-config')
+      OPA_CONFIG_NAME=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.opaconfig')
       if [[ -z "${OPA_CONFIG_NAME}" ]]; then
         continue
       fi
