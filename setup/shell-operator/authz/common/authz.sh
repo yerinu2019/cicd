@@ -17,12 +17,12 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
     if [[ $LABEL_MATCHED ]]; then
       NAMESPACE=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.namespace')
       OPA_CONFIG_NAME=$(context::jq -r '.snapshots.${SNAPSHOT_NAME}['"$i"'].filterResult.opa-config')
-      if [[ -z "${OPA_CONFIG_NAME}"]]; then
+      if [[ -z "${OPA_CONFIG_NAME}" ]]; then
         continue
       fi
       OPA_CONFIG=$(kubectl -n "${NAMESPACE}" --ignore-not-found=true get opaconfig "${OPA_CONFIG_NAME}" -o json)
 
-      if [[ -z "${OPA_CONFIG}"]]; then
+      if [[ -z "${OPA_CONFIG}" ]]; then
         continue
       fi
 
