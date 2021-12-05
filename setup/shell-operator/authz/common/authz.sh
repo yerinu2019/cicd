@@ -35,7 +35,6 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
       POLICY_CRD_VERSION=$(echo $OPA_CONFIG | jq -r '.spec.policy-crd-version')
 
       authz::setup-rbac "${NAMESPACE}" "${POLICY_CRD_NAME}" "${POLICY_CRD_GROUP}"
-      kubectl apply -f /common/opa/opa-config-crd.yaml
       authz::create-rego-configmap "${REGO_BUNDLE_URL}" "${REGO_BUNDLE_FILE}"
       authz::create-inject-configmap "${NAMESPACE}" "${KUBE_MGMT_REPLICATE}"
 
