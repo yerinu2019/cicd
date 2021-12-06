@@ -14,7 +14,7 @@ metadata:
     authz-opa-istio: "enabled"
   annotations:
     opaconfig: "opaconfig1"
-    aurtzrun: "1"
+    aurtzrun: "2"
 spec:
   replicas: 1
   selector:
