@@ -2,6 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: opa-istio
 commonAnnotations:
-  iam.gke.io/gcp-service-account: "gcp-sa-creator@monorepotest-323514.iam.gserviceaccount.com"
+  iam.gke.io/gcp-service-account: "gcp-authz-operator@monorepotest-323514.iam.gserviceaccount.com"
 bases:
   - ../../../base
