@@ -68,30 +68,3 @@ function k8s::ensure_istio_enabled() {
   LABEL="istio-injection"
   k8s::label $NAMESPACE namespace $NAMESPACE $LABEL "enabled"
 }
-
-function k8s::service-account-filter() {
-  if [[ "$#" -ne 1 ]]; then
-      echo "Usage: k8s::service-account-filter <label>"
-      exit -1
-  fi
-  LABEL=$1
-  cat <<EOF
-  configVersion: v1
-  kubernetes:
-    -
-      apiVersion: v1
-      group: main
-      jqFilter: |
-          {
-            name: .metadata.name,
-            namespace: .metadata.namespace,
-            hasLabel: (
-             .metadata.labels // {} |
-               contains({"${LABEL}": "enabled"})
-            )
-          }
-      keepFullObjectsInMemory: false
-      kind: ServiceAccount
-      name: sa
-EOF
-}
