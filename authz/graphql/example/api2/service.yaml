@@ -28,6 +28,7 @@ spec:
         app: api
         api: api2
         version: v1
+        authz-opa-istio: "enabled"
     spec:
       serviceAccountName: api2
       containers:
