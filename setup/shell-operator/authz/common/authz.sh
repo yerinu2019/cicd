@@ -174,10 +174,6 @@ data:
       "op": "add",
       "path": "/spec/volumes/-",
       "value": rego_volume,
-    }, {
-      "op": "add",
-      "path": "/spec/volumes/-",
-      "value": opa_policy_volume,
     }]
 
     kubemgmt_container = {
