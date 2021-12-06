@@ -17,7 +17,6 @@ infra: gcp-api gke-cicd external-dns argocd gke-cluster-1
 gcp-api:
 	./gcp-api.sh
 
-#authz: gke-cicd external-dns argocd gke-cluster-1 authz-operator authz-opa authz-acl authz-client
 authz: gke-cicd external-dns argocd gke-cluster-1 authz-operator
 
 authz-example:
@@ -60,8 +59,10 @@ tkn: bin
 
 argocd-cli: bin
 	./argocd-cli.sh
+
 gke-cicd: gcp-api
 	./gke-create.sh cicd
+
 gke-cicd-cleanup:
 	./gke-delete.sh cicd
 
