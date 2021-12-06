@@ -145,7 +145,6 @@ function authz::create-inject-configmap() {
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: opa-istio
   name: inject-policy
 data:
   inject.rego: |
