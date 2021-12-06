@@ -56,6 +56,8 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
       gcp::create-gcp-service-account ${GCP_SERVICE_ACCOUNT}
       gcp::bind-role ${GCP_SERVICE_ACCOUNT} "roles/storage.objectViewer"
       gcp::bind_gcp_service_account ${GCP_SERVICE_ACCOUNT} "${SERVICE_ACCOUNT_NAME}" "${NAMESPACE}"
+
+      kubectl -n "${NAMESPACE}" rollout restart deployment "${DEPLOYMENT_NAME}"
     fi
   done
 }
