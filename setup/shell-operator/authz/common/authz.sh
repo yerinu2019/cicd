@@ -141,7 +141,7 @@ function authz::create-inject-configmap() {
   NAMESPACE=$1
   KUBE_MGMT_REPLICATE=$2
 
-  cat <<EOF | kubectl -n apply -f -
+  cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ConfigMap
 metadata:
