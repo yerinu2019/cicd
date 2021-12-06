@@ -239,9 +239,9 @@ webhooks:
         apiGroups: [""]
         apiVersions: ["v1"]
         resources: ["pods"]
-    namespaceSelector:
+    objectSelector:
       matchLabels:
-        opa-istio-injection: enabled
+        authz-opa-istio: enabled
     failurePolicy: Fail
     admissionReviewVersions: ["v1", "v1beta1"]
     sideEffects: NoneOnDryRun
