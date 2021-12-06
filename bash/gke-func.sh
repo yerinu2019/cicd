@@ -3,6 +3,7 @@
 function create-gke() {
   # desired scopes - default + CloudDNS access
   SCOPES=("https://www.googleapis.com/auth/devstorage.read_write"
+          "https://www.googleapis.com/auth/cloudplatformprojects"
           "https://www.googleapis.com/auth/logging.write"
           "https://www.googleapis.com/auth/monitoring"
           "https://www.googleapis.com/auth/servicecontrol"

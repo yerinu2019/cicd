@@ -14,5 +14,6 @@ source ../bash/gke-func.sh
 create-gcp-service-account "gcp-authz-operator"
 bind-role "gcp-authz-operator" "roles/storage.objectAdmin"
 bind-role "gcp-authz-operator" "roles/iam.serviceAccountAdmin"
+bind-role "gcp-authz-operator" "roles/resourcemanager.projectIamAdmin"
 use-workload-identity "gcp-authz-operator" "opa-istio" "authz-operator"
 
