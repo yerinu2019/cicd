@@ -1,5 +1,14 @@
 #!/bin/bash
-source /common/k8s.sh
+source common/k8s.sh
+
+function authz::reconcile() {
+  AUTHZ_DEPLOYMENTS=$(kubectl get deployment -l authz-opa-istio=enabled -A -o json)
+  echo -e "${AUTHZ_DEPLOYMENTS}" | tr '\r\n' ' ' | jq -c -r '.items[]' | while read item; do
+    #echo $item
+    NAMESPACE=$(echo "${item}" | jq -r '.metadata.namespace')
+    echo "${NAMESPACE}"
+  done
+}
 
 function authz::authz-opa-istio-deployment-filter() {
   SNAPSHOT_NAME="deployments"
