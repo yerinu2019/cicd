@@ -35,7 +35,7 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
       POLICY_CRD_VERSION=$(echo $OPA_CONFIG | jq -r '.spec."policy-crd-version"')
 
       authz::setup-rbac "${NAMESPACE}" "${POLICY_CRD_NAME}" "${POLICY_CRD_GROUP}"
-      authz::create-rego-configmap "${REGO_BUNDLE_URL}" "${REGO_BUNDLE_FILE}"
+      authz::create-rego-configmap "${NAMESPACE}" "${REGO_BUNDLE_URL}" "${REGO_BUNDLE_FILE}"
       authz::create-inject-configmap "${NAMESPACE}" "${KUBE_MGMT_REPLICATE}"
 
       # ensure namespace is istio enabled
@@ -141,7 +141,7 @@ function authz::create-inject-configmap() {
   NAMESPACE=$1
   KUBE_MGMT_REPLICATE=$2
 
-  cat <<EOF | kubectl apply -f -
+  cat <<EOF | kubectl -n "${NAMESPACE}" apply -f -
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -229,15 +229,16 @@ EOF
 }
 
 function authz::create-rego-configmap() {
-  if [[ "$#" -ne 2 ]]; then
-      echo "Usage: authz::create-rego-configmap <rego-bundle-url> <rego-bundle-file>"
+  if [[ "$#" -ne 3 ]]; then
+      echo "Usage: authz::create-rego-configmap <namespace> <rego-bundle-url> <rego-bundle-file>"
       exit 255
   fi
 
-  REGO_BUNDLE_URL=$1
-  REGO_BUNDLE_FILE=$2
+  NAMESPACE=$1
+  REGO_BUNDLE_URL=$2
+  REGO_BUNDLE_FILE=$3
 
-  cat <<EOF | kubectl apply -f -
+  cat <<EOF | kubectl -n "${NAMESPACE}" apply -f -
 apiVersion: v1
 kind: ConfigMap
 metadata:
