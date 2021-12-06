@@ -141,11 +141,12 @@ function authz::create-inject-configmap() {
   NAMESPACE=$1
   KUBE_MGMT_REPLICATE=$2
 
-  cat <<EOF | kubectl -n "${NAMESPACE}" apply -f -
+  cat <<EOF | kubectl -n apply -f -
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: inject-policy
+  namespace: opa-istio
 data:
   inject.rego: |
     package istio
