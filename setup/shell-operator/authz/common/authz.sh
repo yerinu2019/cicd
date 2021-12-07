@@ -2,14 +2,13 @@
 source /common/k8s.sh
 
 function authz::reconcile() {
-  items=$(kubectl get deployment -l authz-opa-istio=enabled -A \
-    -o json | jq  '.items')
-  for item in $(kubectl get deployment -l authz-opa-istio=enabled -A \
-                            -o json | jq  -c '.items[] | del(.status.conditions[].message)'); do
+  items=$(kubectl get deployment -l authz-opa-istio=enabled -A -o json | jq  -c '.items[] | del(.status.conditions[].message)')
+  echo "Items: ${items}"
+  for item in ${items}; do
+    echo "Item: ${item}"
     NAMESPACE=$(echo $item | jq -r '.metadata.namespace')
     DEPLOYMENT_NAME=$(echo $item | jq -r '.metadata.name')
     POD_SELECTOR=$(echo $item | jq -r '.spec.selector')
-    entries=$(echo POD_SELECTOR | jq -c '.matchLabels | to_entries')
     POD_SELECTOR_LABELS=$(echo "${POD_SELECTOR}" | jq -c '.matchLabels | to_entries' | jq -r 'map("\(.key)=\(.value|tostring)")|join(",")')
     POD_CONTAINERS=$(kubectl -n "${NAMESPACE}" get po -l "${POD_SELECTOR_LABELS}" -o json | jq -r '.items[].spec.containers[].name' | jq --raw-input --slurp 'split("\n") | del(.[] | select(. == ""))')
     echo "${POD_CONTAINERS}"
