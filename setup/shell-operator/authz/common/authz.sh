@@ -2,15 +2,13 @@
 source /common/k8s.sh
 
 function authz::reconcile() {
-  items-org="$(kubectl get deployment -l authz-opa-istio=enabled -A -o json | jq  -c '.items[]')"
-  echo "Items-Org: ${items-org}"
-  items=$(echo "${items-org}" | jq  -c '.[] | del(.status.conditions[].message)')
+  items="$(kubectl get deployment -l authz-opa-istio=enabled -A -o json | jq  -c '.items[] | {namespace: .metadata.namespace, name: .metadata.name, selector: .spec.selector, opaconfig: .metadata.annotations.opaconfig}')"
   echo "Items: ${items}"
   for item in ${items}; do
     echo "Item: ${item}"
-    NAMESPACE=$(echo $item | jq -r '.metadata.namespace')
-    DEPLOYMENT_NAME=$(echo $item | jq -r '.metadata.name')
-    POD_SELECTOR=$(echo $item | jq -r '.spec.selector')
+    NAMESPACE=$(echo $item | jq -r '.namespace')
+    DEPLOYMENT_NAME=$(echo $item | jq -r '.name')
+    POD_SELECTOR=$(echo $item | jq -r '.selector')
     POD_SELECTOR_LABELS=$(echo "${POD_SELECTOR}" | jq -c '.matchLabels | to_entries' | jq -r 'map("\(.key)=\(.value|tostring)")|join(",")')
     POD_CONTAINERS=$(kubectl -n "${NAMESPACE}" get po -l "${POD_SELECTOR_LABELS}" -o json | jq -r '.items[].spec.containers[].name' | jq --raw-input --slurp 'split("\n") | del(.[] | select(. == ""))')
     echo "${POD_CONTAINERS}"
@@ -19,7 +17,7 @@ function authz::reconcile() {
       echo "opa sidecar is found"
     else
       echo "injecting opa sidecar"
-      OPA_CONFIG_NAME=$(echo $item | jq -r '.metadata.annotations.opaconfig')
+      OPA_CONFIG_NAME=$(echo $item | jq -r '.opaconfig')
       authz::inject-sidecars "${NAMESPACE}" "${OPA_CONFIG_NAME}"
       kubectl -n "${NAMESPACE}" rollout restart deployment "${DEPLOYMENT_NAME}"
     fi
