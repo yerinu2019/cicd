@@ -16,6 +16,7 @@ function authz::reconcile() {
     if [[ $(echo "${POD_CONTAINERS}" | jq 'any(.[] == "opa-istio"; .)') ]]; then
       echo "opa sidecar is found"
       # ensure service account has gcs reader permission
+      SERVICE_ACCOUNT_NAME=${DEPLOYMENT_NAME}
       authz::configure-service-account "${NAMESPACE}" "${SERVICE_ACCOUNT_NAME}"
     else
       echo "injecting opa sidecar"
