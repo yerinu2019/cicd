@@ -15,6 +15,8 @@ function authz::reconcile() {
 
     if [[ $(echo "${POD_CONTAINERS}" | jq 'any(.[] == "opa-istio"; .)') ]]; then
       echo "opa sidecar is found"
+      # ensure service account has gcs reader permission
+      authz::configure-service-account "${NAMESPACE}" "${SERVICE_ACCOUNT_NAME}"
     else
       echo "injecting opa sidecar"
       OPA_CONFIG_NAME=$(echo $item | jq -r '.opaconfig')
@@ -62,6 +64,19 @@ function authz::inject-sidecars() {
   # associate service account
   DEPLOYMENT_NAME="$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.name')"
   SERVICE_ACCOUNT_NAME=$DEPLOYMENT_NAME
+
+  authz::configure-service-account "${NAMESPACE}" "${SERVICE_ACCOUNT_NAME}"
+  kubectl -n "${NAMESPACE}" rollout restart deployment "${DEPLOYMENT_NAME}"
+}
+
+function authz::configure-service-account() {
+  if [[ "$#" -ne 2 ]]; then
+      echo "Usage: authz::configure-service-account <namespace> <service account name>"
+      exit 255
+  fi
+  # associate service account
+  DEPLOYMENT_NAME="$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.name')"
+  SERVICE_ACCOUNT_NAME=$DEPLOYMENT_NAME
   k8s::ensure_service_account "$NAMESPACE" "$SERVICE_ACCOUNT_NAME"
   kubectl -n "${NAMESPACE}" set sa deployment "${DEPLOYMENT_NAME}" "${SERVICE_ACCOUNT_NAME}"
 
@@ -70,8 +85,6 @@ function authz::inject-sidecars() {
   gcp::create-gcp-service-account ${GCP_SERVICE_ACCOUNT}
   gcp::bind-role ${GCP_SERVICE_ACCOUNT} "roles/storage.objectViewer"
   gcp::bind_gcp_service_account ${GCP_SERVICE_ACCOUNT} "${SERVICE_ACCOUNT_NAME}" "${NAMESPACE}"
-
-  kubectl -n "${NAMESPACE}" rollout restart deployment "${DEPLOYMENT_NAME}"
 }
 
 function authz::authz-opa-istio-deployment-filter() {
