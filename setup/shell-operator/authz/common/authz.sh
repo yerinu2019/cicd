@@ -1,13 +1,78 @@
 #!/bin/bash
-source common/k8s.sh
+source /common/k8s.sh
 
 function authz::reconcile() {
-  AUTHZ_DEPLOYMENTS=$(kubectl get deployment -l authz-opa-istio=enabled -A -o json)
-  echo -e "${AUTHZ_DEPLOYMENTS}" | tr '\r\n' ' ' | jq -c -r '.items[]' | while read item; do
-    #echo $item
-    NAMESPACE=$(echo "${item}" | jq -r '.metadata.namespace')
-    echo "${NAMESPACE}"
+  items=$(kubectl get deployment -l authz-opa-istio=enabled -A \
+    -o json | jq  '.items')
+  for item in $(kubectl get deployment -l authz-opa-istio=enabled -A \
+                            -o json | jq  -c '.items[] | del(.status.conditions[].message)'); do
+    NAMESPACE=$(echo $item | jq -r '.metadata.namespace')
+    DEPLOYMENT_NAME=$(echo $item | jq -r '.metadata.name')
+    POD_SELECTOR=$(echo $item | jq -r '.spec.selector')
+    entries=$(echo POD_SELECTOR | jq -c '.matchLabels | to_entries')
+    POD_SELECTOR_LABELS=$(echo "${POD_SELECTOR}" | jq -c '.matchLabels | to_entries' | jq -r 'map("\(.key)=\(.value|tostring)")|join(",")')
+    POD_CONTAINERS=$(kubectl -n "${NAMESPACE}" get po -l "${POD_SELECTOR_LABELS}" -o json | jq -r '.items[].spec.containers[].name' | jq --raw-input --slurp 'split("\n") | del(.[] | select(. == ""))')
+    echo "${POD_CONTAINERS}"
+
+    if [[ $(echo "${POD_CONTAINERS}" | jq 'any(.[] == "opa-istio"; .)') ]]; then
+      echo "opa sidecar is found"
+    else
+      echo "injecting opa sidecar"
+      OPA_CONFIG_NAME=$(echo $item | jq -r '.metadata.annotations.opaconfig')
+      authz::inject-sidecars "${NAMESPACE}" "${OPA_CONFIG_NAME}"
+      kubectl -n "${NAMESPACE}" rollout restart deployment "${DEPLOYMENT_NAME}"
+    fi
   done
+}
+
+function authz::inject-sidecars() {
+  if [[ "$#" -ne 2 ]]; then
+      echo "Usage: authz::inject-sidecar <namespace> <opa config name>"
+      exit 255
+  fi
+
+  NAMESPACE=$1
+  OPA_CONFIG_NAME=$2
+
+  if [[ -z "${OPA_CONFIG_NAME}" ]]; then
+    return
+  fi
+  OPA_CONFIG=$(kubectl -n "${NAMESPACE}" --ignore-not-found=true get opaconfig "${OPA_CONFIG_NAME}" -o json)
+
+  if [[ -z "${OPA_CONFIG}" ]]; then
+    return
+  fi
+  REGO_BUNDLE_URL=$(echo "$OPA_CONFIG" | jq -r '.spec."rego-bundle-url"')
+  REGO_BUNDLE_FILE=$(echo "$OPA_CONFIG" | jq -r '.spec."rego-bundle-file"')
+  KUBE_MGMT_REPLICATE=$(echo "$OPA_CONFIG" | jq -r '.spec."kube-mgmt-replicate"')
+  POLICY_CRD_NAME=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-name"')
+  POLICY_CRD_GROUP=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-group"')
+  POLICY_CRD_VERSION=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-version"')
+
+  authz::setup-rbac "${NAMESPACE}" "${POLICY_CRD_NAME}" "${POLICY_CRD_GROUP}"
+  authz::create-rego-configmap "${NAMESPACE}" "${REGO_BUNDLE_URL}" "${REGO_BUNDLE_FILE}"
+  authz::create-inject-configmap "${NAMESPACE}" "${KUBE_MGMT_REPLICATE}"
+
+  # ensure namespace is istio enabled
+  k8s::ensure_istio_enabled "$NAMESPACE"
+
+  kubectl apply -f /common/opa/opa-envoy-filter.yaml
+  kubectl apply -f /common/opa/opa-istio.yaml
+  kubectl -n "${NAMESPACE}" apply -f /common/opa/gcs-egress.yaml
+
+  # associate service account
+  DEPLOYMENT_NAME="$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.name')"
+  SERVICE_ACCOUNT_NAME=$DEPLOYMENT_NAME
+  k8s::ensure_service_account "$NAMESPACE" "$SERVICE_ACCOUNT_NAME"
+  kubectl -n "${NAMESPACE}" set sa deployment "${DEPLOYMENT_NAME}" "${SERVICE_ACCOUNT_NAME}"
+
+  # make service account can read gcs rego bundle
+  GCP_SERVICE_ACCOUNT="gcs-reader"
+  gcp::create-gcp-service-account ${GCP_SERVICE_ACCOUNT}
+  gcp::bind-role ${GCP_SERVICE_ACCOUNT} "roles/storage.objectViewer"
+  gcp::bind_gcp_service_account ${GCP_SERVICE_ACCOUNT} "${SERVICE_ACCOUNT_NAME}" "${NAMESPACE}"
+
+  kubectl -n "${NAMESPACE}" rollout restart deployment "${DEPLOYMENT_NAME}"
 }
 
 function authz::authz-opa-istio-deployment-filter() {
@@ -28,48 +93,12 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
     echo "Deployment ${NAME}/${NAMESPACE}, LABEL_MATCHED: ${LABEL_MATCHED}"
     if [[ $LABEL_MATCHED ]]; then
       OPA_CONFIG_NAME=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.opaconfig')
-      if [[ -z "${OPA_CONFIG_NAME}" ]]; then
-        continue
-      fi
-      OPA_CONFIG=$(kubectl -n "${NAMESPACE}" --ignore-not-found=true get opaconfig "${OPA_CONFIG_NAME}" -o json)
-
-      if [[ -z "${OPA_CONFIG}" ]]; then
-        continue
-      fi
-      REGO_BUNDLE_URL=$(echo $OPA_CONFIG | jq -r '.spec."rego-bundle-url"')
-      REGO_BUNDLE_FILE=$(echo $OPA_CONFIG | jq -r '.spec."rego-bundle-file"')
-      KUBE_MGMT_REPLICATE=$(echo $OPA_CONFIG | jq -r '.spec."kube-mgmt-replicate"')
-      POLICY_CRD_NAME=$(echo $OPA_CONFIG | jq -r '.spec."policy-crd-name"')
-      POLICY_CRD_GROUP=$(echo $OPA_CONFIG | jq -r '.spec."policy-crd-group"')
-      POLICY_CRD_VERSION=$(echo $OPA_CONFIG | jq -r '.spec."policy-crd-version"')
-
-      authz::setup-rbac "${NAMESPACE}" "${POLICY_CRD_NAME}" "${POLICY_CRD_GROUP}"
-      authz::create-rego-configmap "${NAMESPACE}" "${REGO_BUNDLE_URL}" "${REGO_BUNDLE_FILE}"
-      authz::create-inject-configmap "${NAMESPACE}" "${KUBE_MGMT_REPLICATE}"
-
-      # ensure namespace is istio enabled
-      k8s::ensure_istio_enabled "$NAMESPACE"
-
-      kubectl apply -f /common/opa/opa-envoy-filter.yaml
-      kubectl apply -f /common/opa/opa-istio.yaml
-      kubectl -n "${NAMESPACE}" apply -f /common/opa/gcs-egress.yaml
-
-      # associate service account
-      DEPLOYMENT_NAME="$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.name')"
-      SERVICE_ACCOUNT_NAME=$DEPLOYMENT_NAME
-      k8s::ensure_service_account "$NAMESPACE" "$SERVICE_ACCOUNT_NAME"
-      kubectl -n "${NAMESPACE}" set sa deployment "${DEPLOYMENT_NAME}" "${SERVICE_ACCOUNT_NAME}"
-
-      # make service account can read gcs rego bundle
-      GCP_SERVICE_ACCOUNT="gcs-reader"
-      gcp::create-gcp-service-account ${GCP_SERVICE_ACCOUNT}
-      gcp::bind-role ${GCP_SERVICE_ACCOUNT} "roles/storage.objectViewer"
-      gcp::bind_gcp_service_account ${GCP_SERVICE_ACCOUNT} "${SERVICE_ACCOUNT_NAME}" "${NAMESPACE}"
-
-      kubectl -n "${NAMESPACE}" rollout restart deployment "${DEPLOYMENT_NAME}"
+      authz::inject-sidecars "${NAMESPACE}" "${OPA_CONFIG_NAME}"
     fi
   done
 }
+
+
 
 function authz::setup-rbac() {
   if [[ "$#" -ne 3 ]]; then

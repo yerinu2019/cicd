@@ -1,5 +1,5 @@
 #!/bin/bash
-. common/gcp.sh
+. /common/gcp.sh
 
 function k8s::resource-label-filter() {
   if [[ "$#" -ne 6 ]]; then
