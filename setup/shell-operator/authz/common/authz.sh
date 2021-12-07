@@ -75,8 +75,9 @@ function authz::configure-service-account() {
       echo "Usage: authz::configure-service-account <namespace> <service account name>"
       exit 255
   fi
+  NAMESPACE=$1
+  SERVICE_ACCOUNT_NAME=$2
   # associate service account
-  DEPLOYMENT_NAME="$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.name')"
   SERVICE_ACCOUNT_NAME=$DEPLOYMENT_NAME
   k8s::ensure_service_account "$NAMESPACE" "$SERVICE_ACCOUNT_NAME"
   kubectl -n "${NAMESPACE}" set sa deployment "${DEPLOYMENT_NAME}" "${SERVICE_ACCOUNT_NAME}"
