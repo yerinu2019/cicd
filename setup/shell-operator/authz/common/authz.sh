@@ -2,7 +2,9 @@
 source /common/k8s.sh
 
 function authz::reconcile() {
-  items=$(kubectl get deployment -l authz-opa-istio=enabled -A -o json | jq  -c '.items[] | del(.status.conditions[].message)')
+  items-org="$(kubectl get deployment -l authz-opa-istio=enabled -A -o json)"
+  echo "Items-Org: ${items-org}"
+  items=$(echo "${items}" | jq  -c '.items[] | del(.status.conditions[].message)')
   echo "Items: ${items}"
   for item in ${items}; do
     echo "Item: ${item}"
