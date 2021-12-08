@@ -13,12 +13,12 @@ tools: bin kustomize opa helm tkn argocd-cli kubectl istioctl operator-sdk
 istioctl:
 	./istioctl.sh
 
-infra: gcp-api gke-cicd external-dns argocd gke-cluster-1
+infra: gcp-api gke-cicd external-dns argocd gke-cluster1
 
 gcp-api:
 	./gcp-api.sh
 
-authz: gke-cicd external-dns argocd gke-cluster-1 authz-operator
+authz: gke-cicd external-dns argocd gke-cluster1 authz-operator
 
 authz-example:
 	./authz-example.sh
@@ -67,7 +67,7 @@ gke-cicd: gcp-api
 gke-cicd-cleanup:
 	./gke-delete.sh cicd
 
-gke-cluster-1:
+gke-cluster1:
 	./gke-app-cluster.sh cluster1
 gke-cluster1-cleanup:
 	./gke-delete.sh cluster1
