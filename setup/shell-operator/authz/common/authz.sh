@@ -125,7 +125,7 @@ function authz::sync-rbac() {
   POLICY_CRD_NAME=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-name"')
   POLICY_CRD_GROUP=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-group"')
   POLICY_CRD_VERSION=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-version"')
-  POLICY_MONITOR_NAME=${POLICY_CRD}-monitor
+  POLICY_MONITOR_NAME=${POLICY_CRD_NAME}-monitor
   OPA_VIEWER_NAME="opa-viewer"
   CONFIGMAP_MODIFIER_NAME="opa-configmap-modifier"
 
