@@ -185,7 +185,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: Group
-    name: system:serviceaccounts:${ns_name}
+    name: system:serviceaccounts:${NAMESPACE}
     apiGroup: rbac.authorization.k8s.io
 EOF
 }
