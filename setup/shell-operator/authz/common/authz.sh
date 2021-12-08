@@ -95,7 +95,7 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
     NAMESPACE=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.namespace')
     NAME=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.name')
     echo "Deployment ${NAME}/${NAMESPACE}, LABEL_MATCHED: ${LABEL_MATCHED}"
-    if [[ $LABEL_MATCHED ]]; then
+    if [[ "${LABEL_MATCHED}" -eq "true" ]]; then
       OPA_CONFIG_NAME=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.opaconfig')
       authz::inject-sidecars "${NAMESPACE}" "${OPA_CONFIG_NAME}"
     fi
