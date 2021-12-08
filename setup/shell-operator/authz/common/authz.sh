@@ -136,7 +136,7 @@ metadata:
   name: ${POLICY_MONITOR_NAME}
 rules:
   - apiGroups: ["${POLICY_CRD_GROUP}"]
-    resources: ["${POLICY_CRD}"]
+    resources: ["${POLICY_CRD_NAME}"]
     verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
