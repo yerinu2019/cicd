@@ -13,14 +13,16 @@ function authz::reconcile() {
     POD_CONTAINERS=$(kubectl -n "${NAMESPACE}" get po -l "${POD_SELECTOR_LABELS}" -o json | jq -r '.items[].spec.containers[].name' | jq --raw-input --slurp 'split("\n") | del(.[] | select(. == ""))')
     echo "${POD_CONTAINERS}"
 
+    OPA_CONFIG_NAME=$(echo $item | jq -r '.opaconfig')
     if [[ $(echo "${POD_CONTAINERS}" | jq 'any(.[] == "opa-istio"; .)') ]]; then
       echo "opa sidecar is found"
       # ensure service account has gcs reader permission
       SERVICE_ACCOUNT_NAME=${DEPLOYMENT_NAME}
       authz::configure-service-account "${NAMESPACE}" "${SERVICE_ACCOUNT_NAME}"
+      authz::sync-rego-configmap "${NAMESPACE}" "${OPA_CONFIG_NAME}"
+      authz::sync-inject-configmap "${NAMESPACE}" "${OPA_CONFIG_NAME}"
     else
       echo "injecting opa sidecar"
-      OPA_CONFIG_NAME=$(echo $item | jq -r '.opaconfig')
       authz::inject-sidecars "${NAMESPACE}" "${OPA_CONFIG_NAME}"
       kubectl -n "${NAMESPACE}" rollout restart deployment "${DEPLOYMENT_NAME}"
     fi
@@ -39,21 +41,10 @@ function authz::inject-sidecars() {
   if [[ -z "${OPA_CONFIG_NAME}" ]]; then
     return
   fi
-  OPA_CONFIG=$(kubectl -n "${NAMESPACE}" --ignore-not-found=true get opaconfig "${OPA_CONFIG_NAME}" -o json)
 
-  if [[ -z "${OPA_CONFIG}" ]]; then
-    return
-  fi
-  REGO_BUNDLE_URL=$(echo "$OPA_CONFIG" | jq -r '.spec."rego-bundle-url"')
-  REGO_BUNDLE_FILE=$(echo "$OPA_CONFIG" | jq -r '.spec."rego-bundle-file"')
-  KUBE_MGMT_REPLICATE=$(echo "$OPA_CONFIG" | jq -r '.spec."kube-mgmt-replicate"')
-  POLICY_CRD_NAME=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-name"')
-  POLICY_CRD_GROUP=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-group"')
-  POLICY_CRD_VERSION=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-version"')
-
-  authz::setup-rbac "${NAMESPACE}" "${POLICY_CRD_NAME}" "${POLICY_CRD_GROUP}"
-  authz::create-rego-configmap "${NAMESPACE}" "${REGO_BUNDLE_URL}" "${REGO_BUNDLE_FILE}"
-  authz::create-inject-configmap "${NAMESPACE}" "${KUBE_MGMT_REPLICATE}"
+  authz::sync-rbac "${NAMESPACE}" "${OPA_CONFIG_NAME}"
+  authz::sync-rego-configmap "${NAMESPACE}" "${OPA_CONFIG_NAME}"
+  authz::sync-inject-configmap "${NAMESPACE}" "${OPA_CONFIG_NAME}"
 
   # ensure namespace is istio enabled
   k8s::ensure_istio_enabled "$NAMESPACE"
@@ -114,14 +105,27 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
 
 
 
-function authz::setup-rbac() {
-  if [[ "$#" -ne 3 ]]; then
-      echo "Usage: authz::setup-rbac <namespace> <policy crd> <policy crd group>"
+function authz::sync-rbac() {
+  if [[ "$#" -ne 2 ]]; then
+      echo "Usage: authz::setup-rbac <namespace> <opa-confog-name"
       exit 255
   fi
-  ns_name=$1
-  POLICY_CRD=$2
-  POLICY_CRD_GROUP=$3
+
+  NAMESPACE=$1
+  OPA_CONFIG_NAME=$2
+
+  if [[ -z "${OPA_CONFIG_NAME}" ]]; then
+    return
+  fi
+  OPA_CONFIG=$(kubectl -n "${NAMESPACE}" --ignore-not-found=true get opaconfig "${OPA_CONFIG_NAME}" -o json)
+
+  if [[ -z "${OPA_CONFIG}" ]]; then
+    return
+  fi
+
+  POLICY_CRD_NAME=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-name"')
+  POLICY_CRD_GROUP=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-group"')
+  POLICY_CRD_VERSION=$(echo "$OPA_CONFIG" | jq -r '.spec."policy-crd-version"')
   POLICY_MONITOR_NAME=${POLICY_CRD}-monitor
   OPA_VIEWER_NAME="opa-viewer"
   CONFIGMAP_MODIFIER_NAME="opa-configmap-modifier"
@@ -139,7 +143,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: ${POLICY_MONITOR_NAME}-${ns_name}
+  name: ${POLICY_MONITOR_NAME}-${NAMESPACE}
 roleRef:
   kind: ClusterRole
   name: ${POLICY_MONITOR_NAME}
@@ -152,21 +156,21 @@ subjects:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: ${OPA_VIEWER_NAME}-${ns_name}
+  name: ${OPA_VIEWER_NAME}-${NAMESPACE}
 roleRef:
   kind: ClusterRole
   name: view
   apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: Group
-    name: system:serviceaccounts:${ns_name}
+    name: system:serviceaccounts:${NAMESPACE}
     apiGroup: rbac.authorization.k8s.io
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: ${CONFIGMAP_MODIFIER_NAME}
-  namespace: ${ns_name}
+  namespace: ${NAMESPACE}
 rules:
   - apiGroups: [""]
     resources: ["configmaps"]
@@ -187,13 +191,25 @@ subjects:
 EOF
 }
 
-function authz::create-inject-configmap() {
+function authz::sync-inject-configmap() {
   if [[ "$#" -ne 2 ]]; then
-      echo "Usage: authz::create-inject-configmap <namespace> <kube-mgmt-replicate>"
+      echo "Usage: authz::create-inject-configmap <namespace> <opa-config-name>"
       exit 255
   fi
+
   NAMESPACE=$1
-  KUBE_MGMT_REPLICATE=$2
+  OPA_CONFIG_NAME=$2
+
+  if [[ -z "${OPA_CONFIG_NAME}" ]]; then
+    return
+  fi
+  OPA_CONFIG=$(kubectl -n "${NAMESPACE}" --ignore-not-found=true get opaconfig "${OPA_CONFIG_NAME}" -o json)
+
+  if [[ -z "${OPA_CONFIG}" ]]; then
+    return
+  fi
+
+  KUBE_MGMT_REPLICATE=$(echo "$OPA_CONFIG" | jq -r '.spec."kube-mgmt-replicate"')
 
   cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -278,15 +294,25 @@ data:
 EOF
 }
 
-function authz::create-rego-configmap() {
-  if [[ "$#" -ne 3 ]]; then
-      echo "Usage: authz::create-rego-configmap <namespace> <rego-bundle-url> <rego-bundle-file>"
+function authz::sync-rego-configmap() {
+  if [[ "$#" -ne 2 ]]; then
+      echo "Usage: authz::create-rego-configmap <namespace> <opa-config-name>"
       exit 255
   fi
 
   NAMESPACE=$1
-  REGO_BUNDLE_URL=$2
-  REGO_BUNDLE_FILE=$3
+  OPA_CONFIG_NAME=$2
+
+  if [[ -z "${OPA_CONFIG_NAME}" ]]; then
+    return
+  fi
+  OPA_CONFIG=$(kubectl -n "${NAMESPACE}" --ignore-not-found=true get opaconfig "${OPA_CONFIG_NAME}" -o json)
+
+  if [[ -z "${OPA_CONFIG}" ]]; then
+    return
+  fi
+  REGO_BUNDLE_URL=$(echo "$OPA_CONFIG" | jq -r '.spec."rego-bundle-url"')
+  REGO_BUNDLE_FILE=$(echo "$OPA_CONFIG" | jq -r '.spec."rego-bundle-file"')
 
   cat <<EOF | kubectl -n "${NAMESPACE}" apply -f -
 apiVersion: v1

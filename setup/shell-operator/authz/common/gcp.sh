@@ -35,7 +35,7 @@ function k8s::annotate() {
             "${ANNOTATION_KEY}"="${ANNOTATION_VALUE}"
     fi
   else
-    CHECK=$(kubectl -n "${K8S_NAMESPACE}" get ${RESOURCE_TYPE} "${RESOURCE_NAME}" -o jsonpath="{.metadata.annotations.${ANNOTATION_KEY_SEARCH}}")
+    CHECK=$(kubectl -n "${K8S_NAMESPACE}" get "${RESOURCE_TYPE}" "${RESOURCE_NAME}" -o jsonpath="{.metadata.annotations.${ANNOTATION_KEY_SEARCH}}")
     echo "Annotation Search Result: ${CHECK}"
     if [[ -z "${CHECK}" ]]; then
       kubectl -n "${K8S_NAMESPACE}" annotate "${RESOURCE_TYPE}" "${RESOURCE_NAME}" \
