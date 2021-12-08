@@ -94,7 +94,6 @@ function authz::handle-authz-opa-istio-enabled-deployment() {
     LABEL_MATCHED=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.labelMatched')
     NAMESPACE=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.namespace')
     NAME=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.name')
-    AUTHZRUN=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.authzrun')
     echo "Deployment ${NAME}/${NAMESPACE}, LABEL_MATCHED: ${LABEL_MATCHED}"
     if [[ $LABEL_MATCHED ]]; then
       OPA_CONFIG_NAME=$(context::jq -r '.snapshots.deployments['"$i"'].filterResult.opaconfig')
@@ -150,7 +149,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: Group
-    name: system:serviceaccounts:${ns_name}
+    name: system:serviceaccounts:${NAMESPACE}
     apiGroup: rbac.authorization.k8s.io
 ---
 kind: ClusterRoleBinding
