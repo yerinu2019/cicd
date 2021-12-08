@@ -1,7 +1,7 @@
 .PHONY: all bin tools infra kubectl kustomize opa helm tkn argocd-cli gke-cicd external-dns external-dns-verify \
 	cleanup gke-cicd-cleanup gke-cluster1-cleanup external-dns-cleanup external-dns-verify-cleanup \
 	tekton argocd argocd-first-password istioctl argo-events \
-	authz authz-rego authz-opa authz-operator authz-example gcp-api
+	authz authz-rego authz-operator authz-example gcp-api
 
 all: infra listeners
 
@@ -26,9 +26,6 @@ authz-operator:
 	./authz-operator.sh
 authz-rego: tekton
 	./authz-rego.sh
-authz-opa:
-	./authz-opa.sh
-
 argo-events:
 	./argo-events.sh
 
@@ -41,7 +38,7 @@ argocd:
 argocd-first-password:
 	./argocd/first-password.sh
 
-apps: authz-rego authz-acl authz-opa
+apps: authz-rego authz-acl 
 
 kustomize:
 	curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
