@@ -58,9 +58,9 @@ gcloud container hub cloudrun apply --gke-cluster="${CLUSTER_LOCATION}"/"${CLUST
 
 MEMBERSHIP_NAME="${CLUSTER_NAME}"
 echo "register anthos1 to fleet"
-gcloud container hub memberships register "${MEMBERSHIP_NAME}" \
- --gke-cluster="${CLUSTER_LOCATION}"/"${CLUSTER_NAME}" \
- --enable-workload-identity
+#gcloud container hub memberships register "${MEMBERSHIP_NAME}" \
+# --gke-cluster="${CLUSTER_LOCATION}"/"${CLUSTER_NAME}" \
+# --enable-workload-identity
 
 echo "describe anothos1 memebership to fleet"
 gcloud container hub memberships describe "${MEMBERSHIP_NAME}"
