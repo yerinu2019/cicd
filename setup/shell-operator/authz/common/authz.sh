@@ -302,8 +302,8 @@ function authz::sync-rego-configmap() {
   NAMESPACE=$1
   OPA_CONFIG_NAME=$2
   DECISION_LOG_URL=${3:-"https://opa-log-collector-6c3oscws4q-uc.a.run.app/"}
-  MIN_DELAY_SECONDS=${4:-"300"}
-  MAX_DELAY_SECONDS=${5:-"600"}
+  MIN_DELAY_SECONDS=${4:-30}
+  MAX_DELAY_SECONDS=${5:-60}
 
   if [[ -z "${OPA_CONFIG_NAME}" ]]; then
     return
@@ -346,8 +346,8 @@ data:
       console: true
       service: decision_logs
       reporting:
-          min_delay_seconds: "${MIN_DELAY_SECONDS}"
-          max_delay_seconds: "${MAX_DELAY_SECONDS}"
+          min_delay_seconds: ${MIN_DELAY_SECONDS}
+          max_delay_seconds: ${MAX_DELAY_SECONDS}
 EOF
 }
 
