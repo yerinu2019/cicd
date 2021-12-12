@@ -7,7 +7,7 @@ CLUSTER_NAME=$1
 CLUSTER_LOCATION=${2:-"us-central1-a"}
 PROJECT_ID=$(gcloud config get-value project)
 
-gcloud container clusters create "${CLUSTER_NAME} \
+gcloud container clusters create "${CLUSTER_NAME}" \
     --project="${PROJECT_ID}" \
     --zone="${CLUSTER_LOCATION}" \
     --machine-type=e2-standard-4 \
