@@ -294,13 +294,16 @@ EOF
 }
 
 function authz::sync-rego-configmap() {
-  if [[ "$#" -ne 2 ]]; then
-      echo "Usage: authz::create-rego-configmap <namespace> <opa-config-name>"
+  if [[ "$#" -lt 2 ]]; then
+      echo "Usage: authz::create-rego-configmap <namespace> <opa-config-name> [<decision log url> <min-delay-seconds> <max_delay_seconds>]"
       exit 255
   fi
 
   NAMESPACE=$1
   OPA_CONFIG_NAME=$2
+  DECISION_LOG_URL=${3:-"https://opa-log-collector-6c3oscws4q-uc.a.run.app/"}
+  MIN_DELAY_SECONDS=${4:-"300"}
+  MAX_DELAY_SECONDS=${5:-"600"}
 
   if [[ -z "${OPA_CONFIG_NAME}" ]]; then
     return
@@ -327,6 +330,8 @@ data:
           gcp_metadata:
             scopes:
               - https://www.googleapis.com/auth/devstorage.read_only
+      - name: decision_logs
+        url: ${DECISION_LOG_URL}
     bundles:
       istio/authz:
         service: gcs
@@ -339,6 +344,10 @@ data:
         path: istio/authz/allow
     decision_logs:
       console: true
+      service: decision_logs
+      reporting:
+          min_delay_seconds: "${MIN_DELAY_SECONDS}"
+          max_delay_seconds: "${MAX_DELAY_SECONDS}"
 EOF
 }
 
