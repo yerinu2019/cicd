@@ -73,7 +73,7 @@ anthos1:
 	./anthos-create-cluster.sh anthos1
 
 anthos1-cleanup:
-	./gke-anthos-delete.sh anthos1
+	./gke-anthos-delete.sh anthos1 us-central1-a
 
 external-dns: 
 	./external-dns.sh

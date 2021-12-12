@@ -1,8 +1,9 @@
 #!/bin/bash
-if [ "$#" -lt 1 ]; then
-    echo "Usage: gke-delete.sh <cluster-name>"
+if [ "$#" -lt 2 ]; then
+    echo "Usage: gke-delete.sh <cluster-name> <location-name>"
     exit 255
 fi
-
-gcloud container hub memberships unregister $1
-gke-delete.sh $1
+CLUSTER_NAME=$1
+LOCATION_NAME=$2
+gcloud container hub memberships unregister "${CLUSTER_NAME}" --gke-cluster="${LOCATION_NAME}/${CLUSTER_NAME}"
+./gke-delete.sh "${CLUSTER_NAME}"
