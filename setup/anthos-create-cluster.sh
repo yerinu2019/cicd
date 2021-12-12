@@ -7,7 +7,7 @@ CLUSTER_NAME=$1
 CLUSTER_LOCATION=${2:-"us-central1-a"}
 PROJECT_ID=$(gcloud config get-value project)
 
-gcloud container clusters create CLUSTER_NAME \
+gcloud container clusters create "${CLUSTER_NAME} \
     --project="${PROJECT_ID}" \
     --zone="${CLUSTER_LOCATION}" \
     --machine-type=e2-standard-4 \
@@ -22,7 +22,7 @@ kubectl config set-context "${CLUSTER_NAME}"
 
 FLEET_PROJECT_ID="${PROJECT_ID}"
 DIR_PATH="$HOME/asm"
-./asmcli install \
+asmcli install \
   --project_id "${PROJECT_ID}" \
   --cluster_name "${CLUSTER_NAME}" \
   --cluster_location "${CLUSTER_LOCATION}" \
