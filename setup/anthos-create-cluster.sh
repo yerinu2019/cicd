@@ -68,6 +68,9 @@ gcloud iam service-accounts add-iam-policy-binding \
     --member "serviceAccount:${PROJECT_ID}.svc.id.goog[knative-serving/controller]" \
     "${OPA_LOG_COLLECTOR}"@"${PROJECT_ID}".iam.gserviceaccount.com
 
+echo "Waiting for namespace being created..."
+sleep 10
+
 kubectl annotate serviceaccount \
     --namespace knative-serving controller \
     iam.gke.io/gcp-service-account="${OPA_LOG_COLLECTOR}"@"${PROJECT_ID}".iam.gserviceaccount.com
