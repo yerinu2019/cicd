@@ -44,11 +44,11 @@ cd "${CURRENT_DIR}"
 
 gcloud container hub cloudrun enable --project="${PROJECT_ID}"
 gcloud container hub features list  --project="${PROJECT_ID}"
-gcloud container hub cloudrun apply --gke-cluster="$(CLUSTER_LOCATION)"/"${CLUSTER_NAME}"
+gcloud container hub cloudrun apply --gke-cluster="${CLUSTER_LOCATION}"/"${CLUSTER_NAME}"
 
 MEMBERSHIP_NAME="${CLUSTER_NAME}"
 gcloud container hub memberships register "${MEMBERSHIP_NAME}" \
- --gke-cluster="$(CLUSTER_LOCATION)"/"${CLUSTER_NAME}" \
+ --gke-cluster="${CLUSTER_LOCATION}"/"${CLUSTER_NAME}" \
  --enable-workload-identity
 
 gcloud container hub memberships describe "${MEMBERSHIP_NAME}"
