@@ -1,7 +1,7 @@
 .PHONY: all bin tools infra kubectl kustomize opa helm tkn argocd-cli gke-cicd external-dns external-dns-verify \
 	cleanup gke-cicd-cleanup gke-cluster1-cleanup external-dns-cleanup external-dns-verify-cleanup \
 	tekton argocd argocd-first-password istioctl argo-events \
-	authz authz-rego authz-operator authz-example gcp-api anthos1 anthos1-cleanup
+	authz authz-rego authz-operator authz-example gcp-api anthos1 anthos1-cleanup logging
 
 all: infra listeners
 
@@ -19,6 +19,9 @@ gcp-api:
 	./gcp-api.sh
 
 authz: gke-cicd external-dns argocd gke-cluster1 authz-operator
+
+logging:
+	./logging.sh
 
 authz-example:
 	./authz-example.sh
