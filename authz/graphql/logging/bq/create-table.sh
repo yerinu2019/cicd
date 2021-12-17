@@ -1,5 +1,5 @@
 #!/bin/bash
-CURRENT_DIR=$(PWD)
+CURRENT_DIR=$(pwd)
 bq mk \
   --table \
   --expiration 3600 \
