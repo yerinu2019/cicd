@@ -1,0 +1,86 @@
+[
+  {
+    "name": "log_level",
+    "type": "STRING"
+  },
+  {
+    "name": "msg",
+    "type": "STRING"
+  },
+  {
+    "name": "log_time",
+    "type": "STRING"
+  },
+  {
+    "name": "decision_id",
+    "type": "STRING"
+  },
+  {
+    "name": "dest_ip",
+    "type": "STRING"
+  },
+  {
+    "name": "x_request_id",
+    "type": "STRING"
+  },
+  {
+    "name": "req_host",
+    "type": "STRING"
+  },
+  {
+    "name": "req_path",
+    "type": "STRING"
+  },
+  {
+    "name": "req_time",
+    "type": "STRING"
+  },
+  {
+    "name": "src_ip",
+    "type": "STRING"
+  },
+  {
+    "name": "dest_principal",
+    "type": "STRING"
+  },
+  {
+    "name": "src_principal",
+    "type": "STRING"
+  },
+  {
+    "name": "xfcc",
+    "type": "STRING"
+  },
+  {
+    "name": "rego_path",
+    "type": "STRING"
+  },
+  {
+    "name": "allowed",
+    "type": "BOOL"
+  },
+  {
+    "name": "cant_mutate",
+    "type": "BOOL"
+  },
+  {
+    "name": "http_status",
+    "type": "INT64"
+  },
+  {
+    "name": "timer_rego_external_resolve_ns",
+    "type": "INT64"
+  },
+  {
+    "name": "timer_rego_query_compile_ns",
+    "type": "INT64"
+  },
+  {
+    "name": "timer_rego_query_eval_ns",
+    "type": "INT64"
+  },
+  {
+    "name": "timer_server_handler_ns",
+    "type": "INT64"
+  }
+]
