@@ -6,3 +6,6 @@ bq mk \
   --description "OPA decision log table" \
   monorepotest-323514:authz.decision_log \
   ${DIR}/schema.json
+
+cd ../adapter
+./make.sh
