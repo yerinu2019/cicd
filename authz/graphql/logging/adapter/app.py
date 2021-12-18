@@ -117,22 +117,22 @@ def writeMetrics(log, converted):
 
 @app.route('/logs', methods=['POST'])
 def hello():
-  #   client = bigquery.Client()
-  #   table_id = "monorepotest-323514.authz.decision_log"
+  client = bigquery.Client()
+  table_id = "monorepotest-323514.authz.decision_log"
   logs = json.loads(gzip.decompress(request.data).decode('utf-8'), strict=False)
   for log in logs:
     print(log)
     converted = convert_json(log)
-    writeMetrics(log, converted)
-    # rows_to_insert = [converted]
-    # errors = client.insert_rows_json(
-    #   table_id, rows_to_insert, row_ids=[None] * len(rows_to_insert)
-    # )  # Make an API request.
-    # if errors == []:
-    #   continue
-    # else:
-    #   print("Encountered errors {} while inserting rows: {}".format(errors, converted))
-    #   return "", 500
+    #writeMetrics(log, converted)
+    rows_to_insert = [converted]
+    errors = client.insert_rows_json(
+      table_id, rows_to_insert, row_ids=[None] * len(rows_to_insert)
+    )  # Make an API request.
+    if errors == []:
+      continue
+    else:
+      print("Encountered errors {} while inserting rows: {}".format(errors, converted))
+      return "", 500
   return "", 200
 
 def create_metric_descriptor(project_id):
