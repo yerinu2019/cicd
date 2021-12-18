@@ -254,6 +254,9 @@ data:
     adapter_container = {
       "name": "log-adapter",
       "image": "yerinu2019/opa-log-adapter",
+      "args": [
+        "--port=8080",
+      ],
     }
 
     kubemgmt_container = {
