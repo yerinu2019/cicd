@@ -2,25 +2,27 @@
 source /common/k8s.sh
 
 function authz::reconcile() {
+  echo "Reconciling..."
   items="$(kubectl get deployment -l authz-opa-istio=enabled -A -o json | jq  -c '.items[] | {namespace: .metadata.namespace, name: .metadata.name, selector: .spec.selector, opaconfig: .metadata.annotations.opaconfig}')"
-  echo "Items: ${items}"
   for item in ${items}; do
-    echo "Item: ${item}"
     NAMESPACE=$(echo $item | jq -r '.namespace')
     DEPLOYMENT_NAME=$(echo $item | jq -r '.name')
     POD_SELECTOR=$(echo $item | jq -r '.selector')
     POD_SELECTOR_LABELS=$(echo "${POD_SELECTOR}" | jq -c '.matchLabels | to_entries' | jq -r 'map("\(.key)=\(.value|tostring)")|join(",")')
     POD_CONTAINERS=$(kubectl -n "${NAMESPACE}" get po -l "${POD_SELECTOR_LABELS}" -o json | jq -r '.items[].spec.containers[].name' | jq --raw-input --slurp 'split("\n") | del(.[] | select(. == ""))')
-    echo "${POD_CONTAINERS}"
-
     OPA_CONFIG_NAME=$(echo $item | jq -r '.opaconfig')
     if [[ $(echo "${POD_CONTAINERS}" | jq 'any(.[] == "opa-istio"; .)') ]]; then
-      echo "opa sidecar is found"
+      echo "opa sidecar is found. ${POD_CONTAINERS}"
       # ensure service account has gcs reader permission
       SERVICE_ACCOUNT_NAME=${DEPLOYMENT_NAME}
       authz::configure-service-account "${NAMESPACE}" "${SERVICE_ACCOUNT_NAME}"
       authz::sync-rego-configmap "${NAMESPACE}" "${OPA_CONFIG_NAME}"
       authz::sync-inject-configmap "${NAMESPACE}" "${OPA_CONFIG_NAME}"
+      local changed =$?
+      if [[ $changed == 1 ]]; then
+        echo "inject configmap is changed. Restarting ${DEPLOYMENT_NAME}/${NAMESPACE} ..."
+        kubectl -n "${NAMESPACE}" rollout restart deployment "${DEPLOYMENT_NAME}"
+      fi
     else
       echo "injecting opa sidecar"
       authz::inject-sidecars "${NAMESPACE}" "${OPA_CONFIG_NAME}"
@@ -197,22 +199,24 @@ function authz::sync-inject-configmap() {
       echo "Usage: authz::create-inject-configmap <namespace> <opa-config-name>"
       exit 255
   fi
-
+  echo "Syncing inject configmap"
   NAMESPACE=$1
   OPA_CONFIG_NAME=$2
 
   if [[ -z "${OPA_CONFIG_NAME}" ]]; then
+    echo "ignoring no opa config name"
     return
   fi
   OPA_CONFIG=$(kubectl -n "${NAMESPACE}" --ignore-not-found=true get opaconfig "${OPA_CONFIG_NAME}" -o json)
 
   if [[ -z "${OPA_CONFIG}" ]]; then
+    echo "ignoreing no opa config"
     return
   fi
 
   KUBE_MGMT_REPLICATE=$(echo "$OPA_CONFIG" | jq -r '.spec."kube-mgmt-replicate"')
 
-  cat <<EOF | kubectl apply -f -
+  CHECK=$(cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -305,6 +309,12 @@ data:
       "configMap": {"name": "rego-config"},
     }
 EOF
+)
+  if [[ "${CHECK}" == "configmap/inject-policy unchanged" ]]; then
+    return 0
+  else
+    return 1
+  fi
 }
 
 function authz::sync-rego-configmap() {
