@@ -18,7 +18,7 @@ function authz::reconcile() {
       authz::configure-service-account "${NAMESPACE}" "${SERVICE_ACCOUNT_NAME}"
       authz::sync-rego-configmap "${NAMESPACE}" "${OPA_CONFIG_NAME}"
       authz::sync-inject-configmap "${NAMESPACE}" "${OPA_CONFIG_NAME}"
-      local changed =$?
+      local changed=$?
       if [[ $changed == 1 ]]; then
         echo "inject configmap is changed. Restarting ${DEPLOYMENT_NAME}/${NAMESPACE} ..."
         kubectl -n "${NAMESPACE}" rollout restart deployment "${DEPLOYMENT_NAME}"
