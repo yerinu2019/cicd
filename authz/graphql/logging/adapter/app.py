@@ -118,7 +118,7 @@ def writeMetrics(log, converted):
 @app.route('/logs', methods=['POST'])
 def hello():
   client = bigquery.Client()
-  table_id = "monorepotest-323514:authz.decision_log"
+  table_id = "monorepotest-323514.authz.decision_log"
   logs = json.loads(gzip.decompress(request.data).decode('utf-8'), strict=False)
   for log in logs:
     print(log)
