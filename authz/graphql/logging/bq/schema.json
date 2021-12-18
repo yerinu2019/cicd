@@ -8,6 +8,10 @@
     "type": "STRING"
   },
   {
+    "name": "rego_error_message",
+    "type": "STRING"
+  },
+  {
     "name": "log_time",
     "type": "STRING"
   },
