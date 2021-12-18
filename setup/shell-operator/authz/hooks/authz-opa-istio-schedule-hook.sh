@@ -7,8 +7,9 @@ function __config__() {
   cat <<EOF
   configVersion: v1
   schedule:
-    - name: "reconcile every 5 min"
-      crontab: "*/5 * * * *"
+    - name: "reconcile every 3 min"
+      crontab: "*/3 * * * *"
+      allowFailure: true
 EOF
 }
 

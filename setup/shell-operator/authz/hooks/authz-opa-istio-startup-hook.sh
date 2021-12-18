@@ -11,7 +11,8 @@ EOF
 }
 
 function __main__() {
-  authz::reconcile
+  #authz::reconcile
+  echo "Don't execute startup hook"
 }
 
 hook::run "$@"
