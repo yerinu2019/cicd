@@ -256,7 +256,7 @@ data:
       "image": "yerinu2019/opa-log-adapter",
       "env": [{
         "name": "PORT",
-        "value": "${LOG_ADAPTER_PORT}"
+        "value": \"${LOG_ADAPTER_PORT}\"
       }],
     }
 
