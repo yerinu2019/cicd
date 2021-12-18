@@ -17,6 +17,7 @@ metadata:
     authzrun: "1"
 spec:
   replicas: 1
+  revisionHistoryLimit: 1
   selector:
     matchLabels:
       app: api
@@ -30,7 +31,6 @@ spec:
         version: v1
         authz-opa-istio: "enabled"
     spec:
-      revisionHistoryLimit: 1
       serviceAccountName: api1
       containers:
         - image: daime/http-dump
