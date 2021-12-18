@@ -256,7 +256,7 @@ data:
       "image": "yerinu2019/opa-log-adapter",
       "env": [{
         "name": "PORT",
-        "value": "8080"
+        "value": "\"8080\""
       }],
     }
 
