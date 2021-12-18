@@ -22,7 +22,7 @@ spec:
       app: api
       api: api1
       version: v1
-  re
+  revisionHistoryLimit: 1
   template:
     metadata:
       labels:
