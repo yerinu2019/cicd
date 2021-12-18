@@ -78,6 +78,7 @@ function gcp::create-gcp-service-account() {
       exit 255
   fi
   GSA=$1
+  echo "gcloud iam service-accounts list | grep ${GSA}@"
   CHECK=$(gcloud iam service-accounts list | grep "${GSA}"@)
   echo "Check Google Service Account Result for ${GSA}@: ${CHECK}"
   if [[ -z "${CHECK}" ]]; then
