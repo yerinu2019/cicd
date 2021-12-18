@@ -74,9 +74,11 @@ function authz::configure-service-account() {
   kubectl -n "${NAMESPACE}" set sa deployment "${DEPLOYMENT_NAME}" "${SERVICE_ACCOUNT_NAME}"
 
   # make service account can read gcs rego bundle
-  GCP_SERVICE_ACCOUNT="gcs-reader"
+  GCP_SERVICE_ACCOUNT="authz-handler"
   gcp::create-gcp-service-account ${GCP_SERVICE_ACCOUNT}
   gcp::bind-role ${GCP_SERVICE_ACCOUNT} "roles/storage.objectViewer"
+  # make service account can write decision log into bigquery authz.decision_log table
+  gcp::bind-role ${GCP_SERVICE_ACCOUNT} "roles/bigquery.dataEditor"
   gcp::bind_gcp_service_account ${GCP_SERVICE_ACCOUNT} "${SERVICE_ACCOUNT_NAME}" "${NAMESPACE}"
 }
 
@@ -243,7 +245,20 @@ data:
       "op": "add",
       "path": "/spec/volumes/-",
       "value": rego_volume,
+    }, {
+      "op": "add",
+      "path": "/spec/containers/-",
+      "value": adapter_container,
     }]
+
+    adapter_container = {
+      "name": "log-adapter",
+      "image": "yerinu2019/opa-log-adapter",
+      "env": [{
+        "name": "PORT",
+        "value": ${LOG_ADAPTER_PORT}
+      }],
+    }
 
     kubemgmt_container = {
       "name": "kube-mgmt",
@@ -294,6 +309,7 @@ EOF
 }
 
 function authz::sync-rego-configmap() {
+  LOG_ADAPTER_PORT=8080
   if [[ "$#" -lt 2 ]]; then
       echo "Usage: authz::create-rego-configmap <namespace> <opa-config-name> [<decision log url> <min-delay-seconds> <max_delay_seconds>]"
       exit 255
@@ -301,7 +317,8 @@ function authz::sync-rego-configmap() {
 
   NAMESPACE=$1
   OPA_CONFIG_NAME=$2
-  DECISION_LOG_URL=${3:-"https://opa-log-collector-6c3oscws4q-uc.a.run.app/"}
+  #DECISION_LOG_URL=${3:-"https://opa-log-collector-6c3oscws4q-uc.a.run.app/"}
+  DECISION_LOG_URL=${3:-"http://localhost:${LOG_ADAPTER_PORT}/"}
   MIN_DELAY_SECONDS=${4:-30}
   MAX_DELAY_SECONDS=${5:-60}
 
