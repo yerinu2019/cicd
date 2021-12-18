@@ -209,5 +209,9 @@ if __name__ == '__main__':
   # create_metric_descriptor(PROJECT_ID)
   # write_time_series(PROJECT_ID)
   # list_metric_descriptors(PROJECT_ID)
-  server_port = os.environ.get('PORT', '8080')
+  from argparse import ArgumentParser
+  parser = ArgumentParser()
+  parser.add_argument("--port")
+  args = parser.parse_args()
+  server_port = args.port
   app.run(debug=False, port=server_port, host='0.0.0.0')
