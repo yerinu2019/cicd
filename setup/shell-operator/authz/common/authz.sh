@@ -252,10 +252,10 @@ data:
     }, {
       "op": "add",
       "path": "/spec/containers/-",
-      "value": adapter_container,
+      "value": logger_container,
     }]
 
-    adapter_container = {
+    logger_container = {
       "name": "log-adapter",
       "image": "yerinu2019/opa-log-adapter",
       "args": [
