@@ -22,6 +22,7 @@ spec:
       app: api
       api: api1
       version: v1
+  re
   template:
     metadata:
       labels:
@@ -30,6 +31,7 @@ spec:
         version: v1
         authz-opa-istio: "enabled"
     spec:
+      revisionHistoryLimit: 1
       serviceAccountName: api1
       containers:
         - image: daime/http-dump
