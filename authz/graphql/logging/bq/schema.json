@@ -65,7 +65,7 @@
   },
   {
     "name": "cant_mutate",
-    "type": "BOOL"
+    "type": "STRING"
   },
   {
     "name": "http_status",
