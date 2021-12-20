@@ -108,7 +108,7 @@ def writeMetrics(log, converted):
       client.create_time_series(name=project_name, time_series=[series])
     except exceptions.InvalidArgument as e:
       if "more frequently than the maximum sampling period" in e.message or "Points must be written in order" in e.message:
-        continue
+        return
       else:
         raise e
 
