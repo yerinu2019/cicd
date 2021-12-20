@@ -81,6 +81,7 @@ function authz::configure-service-account() {
   gcp::bind-role ${GCP_SERVICE_ACCOUNT} "roles/storage.objectViewer"
   # make service account can write decision log into bigquery authz.decision_log table
   gcp::bind-role ${GCP_SERVICE_ACCOUNT} "roles/bigquery.dataEditor"
+  gcp::bind-role ${GCP_SERVICE_ACCOUNT} "roles/monitoring.metricWriter"
   gcp::bind_gcp_service_account ${GCP_SERVICE_ACCOUNT} "${SERVICE_ACCOUNT_NAME}" "${NAMESPACE}"
 }
 

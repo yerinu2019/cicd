@@ -84,35 +84,33 @@ def convert_json(inp):
   return out
 
 def writeMetrics(log, converted):
-  if 'metrics' in log and 'req_time' in converted:
+  if 'metrics' in log and 'req_time' in converted and 'timer_server_handler_ns' in converted:
     client = monitoring_v3.MetricServiceClient()
     project="monorepotest-323514"
     project_name = f"projects/{project}"
-    metrics = log['metrics']
-    for key in metrics:
-      val = metrics[key]
-      series = monitoring_v3.TimeSeries()
-      series.metric.type = "custom.googleapis.com/opa/" + key
-      series.resource.type = "generic_task"
-      host = converted["req_host"].split('.')
-      series.resource.labels["job"] = host[0]
-      series.resource.labels["namespace"] = host[1]
-      series.resource.labels["task_id"] = "N/A"
-      series.resource.labels["location"] = "us-central1"
-      series.resource.labels["project_id"] = "monorepotest-323514"
-      timestamp = timestamp_pb2.Timestamp()
-      interval = monitoring_v3.TimeInterval()
-      timestamp.FromJsonString(converted['req_time'])
-      interval.end_time = timestamp
-      point = monitoring_v3.Point({"interval": interval, "value": {"double_value": val}})
-      series.points = [point]
-      try:
-        client.create_time_series(name=project_name, time_series=[series])
-      except exceptions.InvalidArgument as e:
-        if "more frequently than the maximum sampling period" in e.message or "Points must be written in order" in e.message:
-          continue
-        else:
-          raise e
+
+    series = monitoring_v3.TimeSeries()
+    series.metric.type = "custom.googleapis.com/opa/timer_server_handler_ns"
+    series.resource.type = "generic_task"
+    host = converted["req_host"].split('.')
+    series.resource.labels["job"] = host[0]
+    series.resource.labels["namespace"] = host[1]
+    series.resource.labels["task_id"] = "N/A"
+    series.resource.labels["location"] = "us-central1"
+    series.resource.labels["project_id"] = "monorepotest-323514"
+    timestamp = timestamp_pb2.Timestamp()
+    interval = monitoring_v3.TimeInterval()
+    timestamp.FromJsonString(converted['req_time'])
+    interval.end_time = timestamp
+    point = monitoring_v3.Point({"interval": interval, "value": {"double_value": converted['timer_server_handler_ns']}})
+    series.points = [point]
+    try:
+      client.create_time_series(name=project_name, time_series=[series])
+    except exceptions.InvalidArgument as e:
+      if "more frequently than the maximum sampling period" in e.message or "Points must be written in order" in e.message:
+        continue
+      else:
+        raise e
 
 
 @app.route('/logs', methods=['POST'])
@@ -123,7 +121,7 @@ def hello():
   for log in logs:
     print(log)
     converted = convert_json(log)
-    #writeMetrics(log, converted)
+    writeMetrics(log, converted)
     rows_to_insert = [converted]
     errors = client.insert_rows_json(
       table_id, rows_to_insert, row_ids=[None] * len(rows_to_insert)

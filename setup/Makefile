@@ -18,7 +18,7 @@ infra: gcp-api gke-cicd external-dns argocd gke-cluster1
 gcp-api:
 	./gcp-api.sh
 
-authz: gke-cicd external-dns argocd gke-cluster1 authz-operator
+authz: gke-cicd external-dns argocd gke-cluster1 logging authz-operator
 
 logging:
 	./logging.sh
