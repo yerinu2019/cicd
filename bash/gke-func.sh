@@ -31,15 +31,15 @@ function create-gke() {
   if [[ -z "${GKE}" ]]; then
     echo "Create GKE $MY_CLUSTER_NAME"
     # Create GKE Cluster
-    gcloud alpha container clusters create \
+    gcloud container clusters create \
           --num-nodes ${NUM_NODES} \
           --scopes $MY_SCOPES \
           --workload-pool=$MY_PROJECT.svc.id.goog \
           --enable-vertical-pod-autoscaling \
           --enable-autoprovisioning \
-          -- min-memory ${MEM} \
+          --min-memory ${MEM} \
           --max-memory ${MEM} \
-          -- min-cpu ${CPU} \
+          --min-cpu ${CPU} \
           --max-cpu ${CPU} \
           $MY_CLUSTER_NAME
 
