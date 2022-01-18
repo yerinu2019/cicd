@@ -6,8 +6,8 @@ fi
 CLUSTER_NAME=$1
 MY_PROJECT=${5:-"$(gcloud config get-value project)"}
 NUM_NODES="3"
-CPU="4"
-MEM="32"
+CPU="24"
+MEM="96"
 ./gke-create.sh "${CLUSTER_NAME}" "istio" "us-central1-a" "us-central1" ${MY_PROJECT} ${NUM_NODES} ${CPU} ${MEM}
 
 # Create GCP service account used by authz-operator kubernetes service account

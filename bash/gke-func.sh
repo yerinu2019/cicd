@@ -37,7 +37,9 @@ function create-gke() {
           --workload-pool=$MY_PROJECT.svc.id.goog \
           --enable-vertical-pod-autoscaling \
           --enable-autoprovisioning \
+          -- min-memory ${MEM} \
           --max-memory ${MEM} \
+          -- min-cpu ${CPU} \
           --max-cpu ${CPU} \
           $MY_CLUSTER_NAME
 
