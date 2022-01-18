@@ -16,7 +16,7 @@ metadata:
     opaconfig: "opaconfig1"
     aurtzrun: "1"
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: api

@@ -4,7 +4,11 @@ if [[ "$#" -lt 1 ]]; then
     exit 255
 fi
 CLUSTER_NAME=$1
-./gke-create.sh "${CLUSTER_NAME}" "istio"
+MY_PROJECT=${5:-"$(gcloud config get-value project)"}
+NUM_NODES="3"
+CPU="4"
+MEM="32"
+./gke-create.sh "${CLUSTER_NAME}" "istio" "us-central1-a" "us-central1" ${MY_PROJECT} ${NUM_NODES} ${CPU} ${MEM}
 
 # Create GCP service account used by authz-operator kubernetes service account
 # authz-operator should be able to create GCP service account that can read GCS bucket and

@@ -18,6 +18,9 @@ function create-gke() {
   MY_ZONE=${2:-"us-central1-a"}                         # default zone if not set
   MY_REGION=${3:-"us-central1"}                         # default region if not set
   MY_PROJECT=${4:-"$(gcloud config get-value project)"} # default project if not set
+  NUM_NODES=${5:-"1"}
+  CPU=${6:-"2"}
+  MEM=${7:-"8"}
 
   gcloud config set project $MY_PROJECT
   gcloud config set compute/zone $MY_ZONE
@@ -29,13 +32,13 @@ function create-gke() {
     echo "Create GKE $MY_CLUSTER_NAME"
     # Create GKE Cluster
     gcloud container clusters create \
-          --num-nodes 1 \
+          --num-nodes ${NUM_NODES} \
           --scopes $MY_SCOPES \
           --workload-pool=$MY_PROJECT.svc.id.goog \
           --enable-vertical-pod-autoscaling \
           --enable-autoprovisioning \
-          --max-memory 8 \
-          --max-cpu 2 \
+          --max-memory ${MEM} \
+          --max-cpu ${CPU} \
           $MY_CLUSTER_NAME
 
     set-myself-admin $MY_CLUSTER_NAME $MY_ZONE

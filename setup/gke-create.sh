@@ -10,8 +10,11 @@ ISTIO=${2:-"false"}                                   # enable istio
 MY_ZONE=${3:-"us-central1-a"}                         # default zone if not set
 MY_REGION=${4:-"us-central1"}                         # default region if not set
 MY_PROJECT=${5:-"$(gcloud config get-value project)"} # default project if not set
+NUM_NODES=${6:-"1"}
+CPU=${7:-"2"}
+MEM=${8:-"8"}
 
-create-gke "$MY_CLUSTER_NAME"
+create-gke "$MY_CLUSTER_NAME $MY_ZONE $MY_REGION $MY_PROJECT $NUM_NODES $CPU $MEM"
 switch-gke "$MY_CLUSTER_NAME"
 
 if [[ $ISTIO == "istio" ]]; then
