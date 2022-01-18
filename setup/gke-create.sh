@@ -14,7 +14,7 @@ NUM_NODES=${6:-"1"}
 CPU=${7:-"2"}
 MEM=${8:-"8"}
 
-create-gke "$MY_CLUSTER_NAME $MY_ZONE $MY_REGION $MY_PROJECT $NUM_NODES $CPU $MEM"
+create-gke $MY_CLUSTER_NAME $MY_ZONE $MY_REGION $MY_PROJECT $NUM_NODES $CPU $MEM
 switch-gke "$MY_CLUSTER_NAME"
 
 if [[ $ISTIO == "istio" ]]; then
