@@ -31,7 +31,7 @@ function create-gke() {
   if [[ -z "${GKE}" ]]; then
     echo "Create GKE $MY_CLUSTER_NAME"
     # Create GKE Cluster
-    gcloud container clusters create \
+    gcloud beta container clusters create \
           --num-nodes ${NUM_NODES} \
           --scopes $MY_SCOPES \
           --workload-pool=$MY_PROJECT.svc.id.goog \
