@@ -96,5 +96,5 @@ gke-zookeeper-cleanup:
 	./gke-delete.sh zookeeper
 
 zookeeper: gke-zookeeper
-	kubectl apply -f ./zookeeper/zookeper.yaml
+	kubectl apply -f ./zookeeper/zookeeper.yaml
 zookeeper-cleanup: gke-zookeeper-cleanup
