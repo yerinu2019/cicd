@@ -1,16 +1,16 @@
 #!/bin/bash
 if [[ "$#" -lt 1 ]]; then
-    echo "Usage: gke-create.sh <cluster-name> [istio <zone> <region> <gcp-project>]"
+    echo "Usage: gke-create.sh <cluster-name> [<num-nodes> istio <zone> <region> <gcp-project>]"
     exit 255
 fi
 
 source ../bash/gke-func.sh
 MY_CLUSTER_NAME=$1                                    # gke cluster name
-ISTIO=${2:-"false"}                                   # enable istio
-MY_ZONE=${3:-"us-central1-a"}                         # default zone if not set
-MY_REGION=${4:-"us-central1"}                         # default region if not set
-MY_PROJECT=${5:-"$(gcloud config get-value project)"} # default project if not set
-NUM_NODES=${6:-"1"}
+NUM_NODES=${2:-"1"}
+ISTIO=${3:-"false"}                                   # enable istio
+MY_ZONE=${4:-"us-central1-a"}                         # default zone if not set
+MY_REGION=${5:-"us-central1"}                         # default region if not set
+MY_PROJECT=${6:-"$(gcloud config get-value project)"} # default project if not set
 CPU=${7:-"2"}
 MEM=${8:-"8"}
 

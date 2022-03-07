@@ -89,3 +89,11 @@ external-dns-cleanup:
 external-dns-verify-cleanup:
 	./external-dns-verify-cleanup.sh
 cleanup: gke-cicd-cleanup gke-cluster1-cleanup
+
+gke-zookeeper:
+	./gke-app-cluster.sh zookeeper 3
+gke-zookeeper-cleanup:
+	./gke-delete.sh zookeeper
+
+zookeeper: gke-zookeeper
+	kubectl apply -f ./zookeeper/zookeper.yaml

@@ -8,7 +8,7 @@ MY_PROJECT=${5:-"$(gcloud config get-value project)"}
 NUM_NODES="3"
 CPU="24"
 MEM="96"
-./gke-create.sh "${CLUSTER_NAME}" "istio" "us-central1-a" "us-central1" ${MY_PROJECT} ${NUM_NODES} ${CPU} ${MEM}
+./gke-create.sh "${CLUSTER_NAME}" ${NUM_NODES} "istio" "us-central1-a" "us-central1" ${MY_PROJECT} ${CPU} ${MEM}
 
 # Create GCP service account used by authz-operator kubernetes service account
 # authz-operator should be able to create GCP service account that can read GCS bucket and
